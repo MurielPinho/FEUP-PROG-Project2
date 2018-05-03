@@ -3,24 +3,33 @@
 #include <iostream>
 #include <fstream>
 
+using namespace std;
+
+
 class Board {
 public:
 
   Board();
-  Board(vector<vector<string> >inGameBoard, int lines, int columns);
-  void showBoard(vector<vector<string> >inGameBoard);
-  bool addWord(vector<vector<string> >inGameBoard);
+  void showBoard();
+  bool addWord(string word, string lineReference, string colReference, string dirReference);
+  bool removeWord(string word, string lineReference, string colReference, string dirReference);
 
 private:
 
   int lines, columns;
-  vector<vector<string> >inGameBoard;
-}
+  vector<string>inGameBoard;
+};
 
 class Dictionary {
 public:
 
   Dictionary();
+  void          showDictionary();
+  bool          VerifyWord(string word);
+  vector<string>searchWord(string word);
 
 private:
-}
+
+  vector<string>inGameDictionary;
+  vector<vector<string> >Synonyms;
+};
