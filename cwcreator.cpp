@@ -16,6 +16,7 @@ int  main() {
   beginProgram();
   Dictionary j;
   j.CreateDictionary();
+
   j.showDictionary();
 
   // while (true)

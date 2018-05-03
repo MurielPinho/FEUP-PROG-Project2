@@ -21,15 +21,14 @@ vector<string>searchWord(string word);
 
 void          Dictionary::CreateDictionary()
 {
-
   string   file4read, file4write, line, key;
   ifstream infile, outfile;
   regex    reg("[A-Z a-z :,]+");
   char    *tok = NULL, *write = NULL;
   bool     FirstWord;
 
-  // getline(cin, file4read);
-  file4read = "dic.txt";
+  getline(cin, file4read);
+
   infile.open(file4read);
 
 
@@ -72,7 +71,6 @@ void          Dictionary::CreateDictionary()
         else
         {
           Synonyms[key].push_back(tok);
-          cout << tok << endl;
         }
         tok = strtok(NULL, ":,");
       }
@@ -90,7 +88,6 @@ void Dictionary::showDictionary()
     cout << inGameDictionary.at(i) << endl;
   }
 }
-
 
 bool Dictionary::VerifyWord(string word)
 

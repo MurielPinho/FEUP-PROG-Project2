@@ -1,2 +1,12 @@
 Aback: backwards, rearwards, aft, abaft, astern, behind, back
 Abandon: leave, forsake, desert, renounce, cease, relinquish, discontinue, castoff, resign, retire, quit, forego, forswear, depart from, vacate, surrender, abjure, repudiate
+Abandoned: profligate, wicked, vicious, unprincipled, reprobate, incorrigible, sinful, graceless, demoralized, dissolute, depraved, bad, licentious, corrupt
+Abase: degrade, disgrace, bring low, reduce, humble, demean, stoop, humiliate, depress, lower, sink, dishonor
+Abasement: degradation, depression, disgrace, humiliation, abjection, dishonor, shame
+Abash: confound, confuse, discompose, bewilder, daunt, cow, humble, disconcert, dishearten, motility, shame, humiliate
+Abate: terminate, remove, suppress, lower, reduce, mitigate, diminish, moderate, lessen, subside, decrease
+Abbreviate: shorten, reduce, abridge, contract, curtail, epitomize, condense, prune, compress
+Abbreviation: abridgment, reduction, contraction, curtailment, abstract, summary, epitome, condensation, compression
+Abderite: cynic, sardonic, derisive, sarcastic, jocular, flippant, nonchalant, sportive, sprightful, buoyant
+Abdicate: abandon, relinquish, resign, surrender, vacate
+Abdomen: belly, paunch
