@@ -21,8 +21,7 @@ vector<string>searchWord(string word);
 
 void          Dictionary::CreateDictionary()
 {
-  map<string, vector<string> > Synonyms;
-  vector<string> inGameDictionary;
+
   string   file4read, file4write, line, key;
   ifstream infile, outfile;
   regex    reg("[A-Z a-z :,]+");
@@ -48,7 +47,7 @@ void          Dictionary::CreateDictionary()
     write = new char[line.length() + 1];
     strcpy(write, line.c_str());
     FirstWord = true;
-    cout << write << endl;
+
 
     // Separação de palavras simples
     if (regex_match(write, reg))
@@ -92,7 +91,9 @@ void Dictionary::showDictionary()
   }
 }
 
-bool VerifyWord(string word)
+
+bool Dictionary::VerifyWord(string word)
+
 {
   for (size_t i = 0; i < inGameDictionary.size(); i++) {
     if (word == inGameDictionary.at(i))
