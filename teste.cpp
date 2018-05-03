@@ -23,7 +23,7 @@ void          Dictionary::CreateDictionary()
 {
   string   file4read, file4write, line, key;
   ifstream infile, outfile;
-  regex    reg("[A-Z a-z :,]+");
+  regex    reg("[A-Za-z: ,]+");
   char    *tok = NULL, *write = NULL;
   bool     FirstWord;
 
@@ -49,7 +49,7 @@ void          Dictionary::CreateDictionary()
 
 
     // Separação de palavras simples
-    if (regex_match(write, reg))
+    if (regex_match(line, reg))
     {
       tok = strtok(write, ":,");
 
@@ -76,7 +76,6 @@ void          Dictionary::CreateDictionary()
       }
     }
   }
-
 
   infile.close();
 }
