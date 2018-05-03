@@ -21,6 +21,7 @@ vector<string>searchWord(string word);
 
 void          Dictionary::CreateDictionary()
 {
+
   string   file4read, file4write, line, key;
   ifstream infile, outfile;
   regex    reg("[A-Z a-z :,]+");
@@ -90,7 +91,9 @@ void Dictionary::showDictionary()
   }
 }
 
+
 bool Dictionary::VerifyWord(string word)
+
 {
   for (size_t i = 0; i < inGameDictionary.size(); i++) {
     if (word == inGameDictionary.at(i))
