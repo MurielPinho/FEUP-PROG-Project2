@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <map>
 #include <fstream>
 
 using namespace std;
@@ -23,13 +24,13 @@ private:
 class Dictionary {
 public:
 
-  Dictionary();
+  void          CreateDictionary();
   void          showDictionary();
   bool          VerifyWord(string word);
   vector<string>searchWord(string word);
 
 private:
 
+  map<string, vector<string> >Synonyms;
   vector<string>inGameDictionary;
-  vector<vector<string> >Synonyms;
 };
