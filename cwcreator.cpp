@@ -16,17 +16,8 @@ int  main() {
   beginProgram();
   Dictionary j;
   j.CreateDictionary();
-
-<<<<<<< HEAD
-
   j.showDictionary();
 
-
-
-=======
-  j.showDictionary();
-
->>>>>>> e857b4f619f59faa74bc43c9ebe1532d3c661568
   // while (true)
   // {
   //   switch (options()) {
