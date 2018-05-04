@@ -10,29 +10,34 @@ using namespace std;
 
 void beginProgram();
 int  options();
-void puzzleCreator();
+void puzzleCreator(Dictionary& crosswords);
+
 
 int  main() {
+  string word;
+  Dictionary crosswords;
+
+  vector<string> words;
+
+  system("clear");
   beginProgram();
-  Dictionary j;
-  j.CreateDictionary();
 
-  j.showDictionary();
 
-  // while (true)
-  // {
-  //   switch (options()) {
-  //   case 1:
-  //     puzzleCreator();
-  //     break;
-  //
-  //   case 2:
-  //     break;
-  //
-  //   case 0:
-  //     return 0;
-  //   }
-  // }
+  while (true)
+  {
+    switch (options()) {
+    case 1:
+
+      puzzleCreator(crosswords);
+      break;
+
+    case 2:
+      break;
+
+    case 0:
+      return 0;
+    }
+  }
   return 0;
 }
 
@@ -44,52 +49,57 @@ void beginProgram()
   cout << "Position ( LCD / CRTL-Z = stop )" << endl
        << " LCD stands for Line Column and Direction" << endl;
   cout << " ..." << endl << endl << " ... //TO COMPLETE" << endl << " ..." << endl;
-  cout << endl << "--------------------------------------------------" << endl;
-  cout << endl << "OPTIONS:" << endl;
-  cout << "1 - Create puzzle" << endl;
-  cout << "2 - Resume puzzle" << endl;
-  cout << "0 - Exit" << endl;
+  cout << endl << "--------------------------------------------------" << endl << endl;
 }
 
 int options()
 {
   int opt;
 
+  system("clear");
+  cout <<  "OPTIONS:" << endl;
+  cout << "1 - Create puzzle" << endl;
+  cout << "2 - Resume puzzle" << endl;
+  cout << "0 - Exit" << endl;
   cout << endl << "Option ? ";
-
   cin >> opt;
-
+  cin.ignore();
+  cout << endl;
   return opt;
 }
 
-//
-// void puzzleCreator()
-// {
-//   Board  game;
-//   string lcd, word;
-//
-//   cout << endl << "--------------------------------------------------" << endl;
-//   cout << "CREATE PUZZLE" << endl;
-//   cout << "--------------------------------------------------" << endl;
-//
-//   do {
-//     game.showBoard();
-//     cout << "Position ( LCD / CRTL-Z = stop ) ? ";
-//     getline(cin, lcd);
-//     cout << "Word ( - = remove / ? = help ) ? ";
-//     getline(cin, word);
-//
-//     if (word == "-")
-//     {
-//       game.removeWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
-//     }
-//     else if (word == "?")
-//     {
-//       game.showDictionary();
-//     }
-//     else
-//     {
-//       game.addWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
-//     }
-//   } while (!cin.eof());
-// }
+void puzzleCreator(Dictionary& crosswords)
+{
+  // Board  game;
+  string lcd, word;
+
+  system("clear");
+  cout << "--------------------------------------------------" << endl;
+  cout << "CREATE PUZZLE" << endl;
+  cout << "--------------------------------------------------" << endl;
+  cout << "Dictionary file name ? ";
+  crosswords.CreateDictionary();
+  cout << "Board size (lines columns) ?" << endl;
+
+
+  // do {
+  //   game.showBoard();
+  //   cout << "Position ( LCD / CRTL-Z = stop ) ? ";
+  //   getline(cin, lcd);
+  //   cout << "Word ( - = remove / ? = help ) ? ";
+  //   getline(cin, word);
+  //
+  //   if (word == "-")
+  //   {
+  //     game.removeWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
+  //   }
+  //   else if (word == "?")
+  //   {
+  //     game.showDictionary();
+  //   }
+  //   else
+  //   {
+  //     game.addWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
+  //   }
+  // } while (!cin.eof());
+}
