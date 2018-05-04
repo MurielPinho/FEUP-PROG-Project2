@@ -13,15 +13,16 @@ using namespace std;
 void          beginProgram();
 int           options();
 void          CreateDictionary();
-
 void          puzzleCreator();
 bool          VerifyWord(string word);
 vector<string>searchWord(string word);
+string        strFix(string s);
+string        strLower(string s);
 
 
 void          Dictionary::CreateDictionary()
 {
-  string   file4read, file4write, line, key;
+  string   file4read, file4write, line, key, synonym;
   ifstream infile, outfile;
   regex    reg("[A-Za-z: ,]+");
   char    *tok = NULL, *write = NULL;
@@ -61,16 +62,14 @@ void          Dictionary::CreateDictionary()
 
         if (FirstWord)
         {
-          key = tok;
-
+          key = strFix(tok);
           inGameDictionary.push_back(key);
-
-
           FirstWord = false;
         }
         else
         {
-          Synonyms[key].push_back(tok);
+          synonym = strLower(tok);
+          Synonyms[key].push_back(synonym);
         }
         tok = strtok(NULL, ":,");
       }
@@ -91,8 +90,14 @@ void Dictionary::showDictionary()
 bool Dictionary::VerifyWord(string word)
 
 {
+  string temp;
+
+  word = strFix(word);
+
   for (size_t i = 0; i < inGameDictionary.size(); i++) {
-    if (word == inGameDictionary.at(i))
+    temp = inGameDictionary.at(i);
+
+    if (word == temp)
     {
       return true;
     }
@@ -100,4 +105,82 @@ bool Dictionary::VerifyWord(string word)
   return false;
 }
 
-// vector<string>searchWord(string word);
+string Dictionary::strFix(string s)
+{
+  bool first = true;
+
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    if (first) {
+      if (islower(s.at(i)))
+      {
+        s.at(i) = toupper(s.at(i));
+      }
+      first = false;
+    }
+    else
+    {
+      if (isupper(s.at(i)))
+      {
+        s.at(i) = tolower(s.at(i));
+      }
+    }
+  }
+  return s;
+}
+
+string Dictionary::strLower(string s)
+{
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    if (isupper(s.at(i)))
+    {
+      s.at(i) = tolower(s.at(i));
+    }
+  }
+  return s;
+}
+
+vector<string>Dictionary::searchWord(string word)
+{
+  vector<string> words;
+  int flag = 0;
+
+  for (size_t i = 0; i < inGameDictionary.size(); i++)
+  {
+    if (inGameDictionary.at(i).size() >= word.size())
+    {
+      for (size_t j = 0; j < word.size(); j++)
+      {
+        for (size_t k = 0; k < inGameDictionary.at(i).size(); k++)
+        {
+          if (tolower(word.at(j)) == tolower(inGameDictionary.at(i).at(k)))
+          {
+            flag = 1;
+            k    = inGameDictionary.at(i).size();
+          }
+          else
+          {
+            flag = 0;
+          }
+        }
+
+        if (flag == 0)
+        {
+          j = word.size();
+        }
+      }
+
+      if (flag != 0)
+      {
+        words.push_back(inGameDictionary.at(i));
+      }
+    }
+  }
+
+  for (size_t i = 0; i < words.size(); i++)
+  {
+    cout << words.at(i) << endl;
+  }
+  return words;
+}

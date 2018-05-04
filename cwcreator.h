@@ -28,6 +28,8 @@ public:
   void          showDictionary();
   bool          VerifyWord(string word);
   vector<string>searchWord(string word);
+  string        strFix(string s);
+  string        strLower(string s);
 
 private:
 
