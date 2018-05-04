@@ -80,6 +80,9 @@ void puzzleCreator(Dictionary& crosswords)
   cout << "Dictionary file name ? ";
   crosswords.CreateDictionary();
   cout << "Board size (lines columns) ?" << endl;
+  Board cw;
+
+  // cw.showBoard();
 
 
   // do {

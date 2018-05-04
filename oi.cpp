@@ -7,47 +7,36 @@
 // #include "cwcreator.h"
 
 #include <iostream>
-#include <stdio.h>
 #include <string>
+#include <vector>
 using namespace std;
-string strLower(string s);
-int    main()
+
+int main()
 {
-  string word;
+  int lin, col;
 
-  getline(cin, word);
-  word = strLower(word);
-  cout << word << endl;
+  cin >> lin;
+  cin >> col;
+  cin.ignore();
+  vector<vector<char> > words(lin, vector<char>(col, '.'));
+  system("clear");
+  cout << "   ";
 
-  //
-  // if (word == "Abdomen")
-  // {
-  //   cout << true << endl;
-  // }
-  // cout << false << endl;
-  return 0;
-}
-
-string strLower(string s)
-{
-  bool first = true;
-
-  for (size_t i = 0; i < s.size(); i++)
+  for (int i = 97; i < col + 97; i++)
   {
-    if (first) {
-      if (islower(s.at(i)))
-      {
-        s.at(i) = toupper(s.at(i));
-      }
-      first = false;
-    }
-    else
-    {
-      if (isupper(s.at(i)))
-      {
-        s.at(i) = tolower(s.at(i));
-      }
-    }
+    cout << char(i) << " ";
   }
-  return s;
+  cout << endl;
+
+  for (int i = 0; i < lin; i++)
+  {
+    cout << char(i + 65) << " ";
+
+    for (size_t j = 0; j < col; j++)
+    {
+      cout << " " << words.at(i).at(j);
+    }
+    cout << endl;
+  }
+  return 0;
 }

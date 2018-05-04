@@ -19,6 +19,7 @@ private:
 
   int lines, columns;
   vector<string>inGameBoard;
+  vector<vector<char> >words;
 };
 
 class Dictionary {
