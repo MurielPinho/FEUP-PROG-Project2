@@ -32,3 +32,4 @@
 *.app
 
 /poop
+.DS_Store
