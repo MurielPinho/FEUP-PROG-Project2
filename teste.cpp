@@ -18,6 +18,13 @@ bool          VerifyWord(string word);
 vector<string>searchWord(string word);
 string        strFix(string s);
 string        strLower(string s);
+void          showBoard();
+void          setLines(int l);
+void          setColumns(int c);
+void          setInGameBoard(vector<vector<char> >b);
+bool          addWord(string word);
+int           convertLetter(char l, bool upper);
+char          convertNumber(int n,  bool upper);
 
 
 void          Dictionary::CreateDictionary()
@@ -192,27 +199,118 @@ Board::Board()
   cin >> lin;
   cin >> col;
   cin.ignore();
+  setLines(lin);
+  setColumns(col);
   vector<vector<char> > words(lin, vector<char>(col, '.'));
+  setInGameBoard(words);
+}
+
+void Board::showBoard()
+{
   system("clear");
   cout << "   ";
 
-  for (int i = 97; i < col + 97; i++)
+  for (int i = 0; i < columns; i++)
   {
-    cout << char(i) << " ";
+    cout << convertNumber(i, false) << " ";
   }
   cout << endl;
 
-  for (int i = 0; i < lin; i++)
+  for (int i = 0; i < lines; i++)
   {
-    cout << char(i + 65) << " ";
+    cout << convertNumber(i, true) << " ";
 
-    for (size_t j = 0; j < col; j++)
+    for (size_t j = 0; j < columns; j++)
     {
-      cout << " " << words.at(i).at(j);
+      cout << " " << inGameBoard.at(i).at(j);
     }
     cout << endl;
   }
 }
 
-void Board::showBoard()
-{}
+void Board::setLines(int l)
+{
+  lines = l;
+}
+
+void Board::setColumns(int c)
+{
+  columns = c;
+}
+
+void Board::setInGameBoard(vector<vector<char> >b)
+{
+  inGameBoard = b;
+}
+
+char Board::convertNumber(int n,  bool upper)
+{
+  char c;
+
+  if (upper)
+  {
+    c = char(n + 65);
+    return c;
+  }
+  else
+  {
+    c = char(n + 97);
+    return c;
+  }
+  return '.';
+}
+
+int Board::convertLetter(char l, bool upper)
+{
+  if (upper)
+  {
+    l = int(l) - 65;
+    return l;
+  }
+  else
+  {
+    l = int(l) - 97;
+    return l;
+  }
+  return 0;
+}
+
+bool Board::addWord(string word, string Reference)
+{
+  int  l, c;
+  bool v;
+
+  l = convertLetter(Reference.at(0), true);
+  c = convertLetter(Reference.at(1), false);
+
+  if (Reference.at(2) == 'V')
+  {
+    v = 1;
+  }
+  else
+  {
+    v = 0;
+  }
+
+
+  cout << endl;
+
+
+  if (v)
+  {
+    for (size_t i = l; i < word.size() + l; i++)
+    {
+      inGameBoard.at(i).at(c) = word.at(i - l);
+    }
+  }
+  else
+  {
+    for (size_t i = c; i < word.size() + c; i++)
+    {
+      inGameBoard.at(l).at(i) = word.at(i - c);
+    }
+  }
+
+
+  return true;
+}

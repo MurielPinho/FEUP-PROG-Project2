@@ -20,24 +20,26 @@ int  main() {
   vector<string> words;
 
   system("clear");
-  beginProgram();
+  puzzleCreator(crosswords);
 
-
-  while (true)
-  {
-    switch (options()) {
-    case 1:
-
-      puzzleCreator(crosswords);
-      break;
-
-    case 2:
-      break;
-
-    case 0:
-      return 0;
-    }
-  }
+  // beginProgram();
+  //
+  //
+  // while (true)
+  // {
+  //   switch (options()) {
+  //   case 1:
+  //
+  //     puzzleCreator(crosswords);
+  //     break;
+  //
+  //   case 2:
+  //     break;
+  //
+  //   case 0:
+  //     return 0;
+  //   }
+  // }
   return 0;
 }
 
@@ -56,7 +58,7 @@ int options()
 {
   int opt;
 
-  system("clear");
+  // system("clear");
   cout <<  "OPTIONS:" << endl;
   cout << "1 - Create puzzle" << endl;
   cout << "2 - Resume puzzle" << endl;
@@ -81,9 +83,11 @@ void puzzleCreator(Dictionary& crosswords)
   crosswords.CreateDictionary();
   cout << "Board size (lines columns) ?" << endl;
   Board cw;
+  cw.showBoard();
+  cw.addWord("muriel", "CbV");
+  cw.showBoard();
 
-  // cw.showBoard();
-
+  // cout << cw.lines << endl;
 
   // do {
   //   game.showBoard();

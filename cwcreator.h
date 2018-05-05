@@ -12,14 +12,21 @@ public:
 
   Board();
   void showBoard();
-  bool addWord(string word, string lineReference, string colReference, string dirReference);
-  bool removeWord(string word, string lineReference, string colReference, string dirReference);
+
+
+  bool addWord(string word, string Reference);
+
+  bool removeWord(string word, string Reference);
+  void setLines(int l);
+  void setColumns(int c);
+  void setInGameBoard(vector<vector<char> >b);
+  int  convertLetter(char l, bool upper);
+  char convertNumber(int n, bool upper);
 
 private:
 
   int lines, columns;
-  vector<string>inGameBoard;
-  vector<vector<char> >words;
+  vector<vector<char> >inGameBoard;
 };
 
 class Dictionary {
