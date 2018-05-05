@@ -20,26 +20,25 @@ int  main() {
   vector<string> words;
 
   system("clear");
-  puzzleCreator(crosswords);
 
-  // beginProgram();
-  //
-  //
-  // while (true)
-  // {
-  //   switch (options()) {
-  //   case 1:
-  //
-  //     puzzleCreator(crosswords);
-  //     break;
-  //
-  //   case 2:
-  //     break;
-  //
-  //   case 0:
-  //     return 0;
-  //   }
-  // }
+  beginProgram();
+
+
+  while (true)
+  {
+    switch (options()) {
+    case 1:
+
+      puzzleCreator(crosswords);
+      break;
+
+    case 2:
+      break;
+
+    case 0:
+      return 0;
+    }
+  }
   return 0;
 }
 
@@ -58,7 +57,7 @@ int options()
 {
   int opt;
 
-  // system("clear");
+  system("clear");
   cout <<  "OPTIONS:" << endl;
   cout << "1 - Create puzzle" << endl;
   cout << "2 - Resume puzzle" << endl;
@@ -72,41 +71,41 @@ int options()
 
 void puzzleCreator(Dictionary& crosswords)
 {
-  // Board  game;
   string lcd, word;
 
-  system("clear");
+
   cout << "--------------------------------------------------" << endl;
   cout << "CREATE PUZZLE" << endl;
   cout << "--------------------------------------------------" << endl;
   cout << "Dictionary file name ? ";
   crosswords.CreateDictionary();
   cout << "Board size (lines columns) ?" << endl;
-  Board cw;
-  cw.showBoard();
-  cw.addWord("muriel", "CbV");
-  cw.showBoard();
+  Board game;
 
-  // cout << cw.lines << endl;
-
-  // do {
-  //   game.showBoard();
-  //   cout << "Position ( LCD / CRTL-Z = stop ) ? ";
-  //   getline(cin, lcd);
-  //   cout << "Word ( - = remove / ? = help ) ? ";
-  //   getline(cin, word);
   //
-  //   if (word == "-")
-  //   {
-  //     game.removeWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
-  //   }
-  //   else if (word == "?")
-  //   {
-  //     game.showDictionary();
-  //   }
-  //   else
-  //   {
-  //     game.addWord(word, lcd.at(0), lcd.at(1), lcd.at(2));
-  //   }
-  // } while (!cin.eof());
+  // cw.showBoard();
+  // cw.addWord("muriel", "JeH");
+  // cw.showBoard();
+
+
+  do {
+    game.showBoard();
+    cout << "Position ( LCD / CRTL-Z = stop ) ? ";
+    getline(cin, lcd);
+    cout << "Word ( - = remove / ? = help ) ? ";
+    getline(cin, word);
+
+    if (word == "-")
+    {
+      game.removeWord(word, lcd);
+    }
+    else if (word == "?")
+    {
+      crosswords.showDictionary();
+    }
+    else
+    {
+      game.addWord(word, lcd);
+    }
+  } while (!cin.eof());
 }

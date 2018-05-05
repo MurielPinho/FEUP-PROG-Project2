@@ -15,7 +15,6 @@ int           options();
 void          CreateDictionary();
 void          puzzleCreator();
 bool          VerifyWord(string word);
-vector<string>searchWord(string word);
 string        strFix(string s);
 string        strLower(string s);
 void          showBoard();
@@ -23,9 +22,10 @@ void          setLines(int l);
 void          setColumns(int c);
 void          setInGameBoard(vector<vector<char> >b);
 bool          addWord(string word);
+bool          removeWord(string word, string Reference);
 int           convertLetter(char l, bool upper);
 char          convertNumber(int n,  bool upper);
-
+vector<string>searchWord(string word);
 
 void          Dictionary::CreateDictionary()
 {
@@ -292,22 +292,111 @@ bool Board::addWord(string word, string Reference)
     v = 0;
   }
 
-
-  cout << endl;
-
-
   if (v)
   {
-    for (size_t i = l; i < word.size() + l; i++)
+    if (l + word.size() <= lines)
     {
-      inGameBoard.at(i).at(c) = word.at(i - l);
+      if (l - 1 >= 0)
+      {
+        inGameBoard.at(l - 1).at(c) = '#';
+      }
+
+      for (size_t i = l; i < word.size() + l; i++)
+      {
+        inGameBoard.at(i).at(c) = word.at(i - l);
+      }
+
+      if (l + word.size() != lines)
+      {
+        inGameBoard.at(l + word.size()).at(c) = '#';
+      }
+    }
+    else
+    {
+      cout << "Deu ruim" << endl;
     }
   }
   else
   {
-    for (size_t i = c; i < word.size() + c; i++)
+    if (c + word.size() <= columns)
     {
-      inGameBoard.at(l).at(i) = word.at(i - c);
+      if (c - 1 >= 0)
+      {
+        inGameBoard.at(l).at(c - 1) = '#';
+      }
+
+      for (size_t i = c; i < word.size() + c; i++)
+      {
+        inGameBoard.at(l).at(i) = word.at(i - c);
+      }
+
+      if (c + word.size() != columns)
+      {
+        inGameBoard.at(l).at(c + word.size()) = '#';
+      }
+    }
+    else
+    {
+      cout << "Deu ruim" << endl;
+    }
+  }
+
+
+  return true;
+}
+
+bool Board::removeWord(string word, string Reference)
+{
+  int  l, c;
+  bool v;
+
+  l = convertLetter(Reference.at(0), true);
+  c = convertLetter(Reference.at(1), false);
+
+  if (Reference.at(2) == 'V')
+  {
+    v = 1;
+  }
+  else
+  {
+    v = 0;
+  }
+
+  if (inGameBoard.at(l).at(c) != '.')
+  {
+    if (v)
+    {
+      if (inGameBoard.at(l).at(l - 2) == '.') {
+        inGameBoard.at(l - 1).at(c) = '.';
+      }
+      int i = l;
+
+      while (inGameBoard.at(i).at(c) != '#')
+      {
+        if ((inGameBoard.at(i).at(c - 1) == '.') && (inGameBoard.at(i).at(c + 1) == '.'))
+        {
+          inGameBoard.at(i).at(c) = '.';
+        }
+        i++;
+      }
+      inGameBoard.at(i).at(c) = '.';
+    }
+    else
+    {
+      if (inGameBoard.at(l).at(c - 2) == '.') {
+        inGameBoard.at(l).at(c - 1) = '.';
+      }
+      int i = c;
+
+      while (inGameBoard.at(l).at(i) != '#')
+      {
+        if ((inGameBoard.at(l - 1).at(i) == '.') && (inGameBoard.at(l + 1).at(i) == '.'))
+        {
+          inGameBoard.at(l).at(i) = '.';
+        }
+        i++;
+      }
+      inGameBoard.at(l).at(i) = '.';
     }
   }
 
