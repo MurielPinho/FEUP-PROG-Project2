@@ -10,12 +10,10 @@ using namespace std;
 class Board {
 public:
 
-  Board();
+  Board ();
+  Board(int lin, int col);
   void showBoard();
-
-
   bool addWord(string word, string Reference);
-
   bool removeWord(string word, string Reference);
   void setLines(int l);
   void setColumns(int c);
@@ -25,7 +23,7 @@ public:
 
 private:
 
-  int lines, columns;
+  unsigned int lines, columns;
   vector<vector<char> >inGameBoard;
 };
 

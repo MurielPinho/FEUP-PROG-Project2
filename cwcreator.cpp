@@ -11,7 +11,7 @@ using namespace std;
 void beginProgram();
 int  options();
 void puzzleCreator(Dictionary& crosswords);
-
+void strUpper(string &s);
 
 int  main() {
   string word;
@@ -19,7 +19,7 @@ int  main() {
 
   vector<string> words;
 
-  system("clear");
+//  system("clear");
 
   beginProgram();
 
@@ -39,7 +39,6 @@ int  main() {
       return 0;
     }
   }
-  return 0;
 }
 
 void beginProgram()
@@ -52,6 +51,17 @@ void beginProgram()
   cout << " ..." << endl << endl << " ... //TO COMPLETE" << endl << " ..." << endl;
   cout << endl << "--------------------------------------------------" << endl << endl;
 }
+void strUpper(string &s)
+{
+    for(size_t i = 0; i < s.size(); i++)
+    {
+        if(islower(s.at(i)))
+        {
+            s.at(i) = toupper(s.at(i));
+        }
+    }
+}
+
 
 int options()
 {
@@ -64,7 +74,8 @@ int options()
   cout << "0 - Exit" << endl;
   cout << endl << "Option ? ";
   cin >> opt;
-  cin.ignore();
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
   cout << endl;
   return opt;
 }
@@ -72,7 +83,7 @@ int options()
 void puzzleCreator(Dictionary& crosswords)
 {
   string lcd, word;
-
+  int lines, columns;
 
   cout << "--------------------------------------------------" << endl;
   cout << "CREATE PUZZLE" << endl;
@@ -80,13 +91,10 @@ void puzzleCreator(Dictionary& crosswords)
   cout << "Dictionary file name ? ";
   crosswords.CreateDictionary();
   cout << "Board size (lines columns) ?" << endl;
-  Board game;
-
-  //
-  // cw.showBoard();
-  // cw.addWord("muriel", "JeH");
-  // cw.showBoard();
-
+  cin >> lines >> columns;
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  Board game(lines, columns);
 
   do {
     game.showBoard();
@@ -97,6 +105,7 @@ void puzzleCreator(Dictionary& crosswords)
 
     if (word == "-")
     {
+      strUpper(word);
       game.removeWord(word, lcd);
     }
     else if (word == "?")
@@ -105,7 +114,15 @@ void puzzleCreator(Dictionary& crosswords)
     }
     else
     {
-      game.addWord(word, lcd);
+      if(crosswords.VerifyWord(word))
+      {
+          strUpper(word);
+          game.addWord(word, lcd);
+      }
+      else
+      {
+          cout << "Word does not exist" << endl;
+      }
     }
   } while (!cin.eof());
 }

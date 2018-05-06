@@ -4,7 +4,6 @@
 #include <fstream>
 #include <regex>
 #include <map>
-
 #include "cwcreator.h"
 
 using namespace std;
@@ -194,11 +193,15 @@ vector<string>Dictionary::searchWord(string word)
 
 Board::Board()
 {
-  int lin, col;
+    lines = 2;
+    columns = 2;
+    vector<vector<char> > words(lines, vector<char>(columns, '.'));
+    setInGameBoard(words);
+}
 
-  cin >> lin;
-  cin >> col;
-  cin.ignore();
+
+Board::Board(int lin, int col)
+{
   setLines(lin);
   setColumns(col);
   vector<vector<char> > words(lin, vector<char>(col, '.'));
@@ -207,16 +210,16 @@ Board::Board()
 
 void Board::showBoard()
 {
-  system("clear");
+  //system("clear");
   cout << "   ";
 
-  for (int i = 0; i < columns; i++)
+  for (unsigned int i = 0; i < columns; i++)
   {
     cout << convertNumber(i, false) << " ";
   }
   cout << endl;
 
-  for (int i = 0; i < lines; i++)
+  for (unsigned int i = 0; i < lines; i++)
   {
     cout << convertNumber(i, true) << " ";
 
@@ -399,7 +402,6 @@ bool Board::removeWord(string word, string Reference)
       inGameBoard.at(l).at(i) = '.';
     }
   }
-
 
   return true;
 }
