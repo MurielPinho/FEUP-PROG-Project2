@@ -117,7 +117,10 @@ void puzzleCreator(Dictionary& crosswords)
       if(crosswords.VerifyWord(word))
       {
           strUpper(word);
-          game.addWord(word, lcd);
+          if(!game.addWord(word, lcd))
+          {
+              cout << "Word has not been added" << endl;
+          }
       }
       else
       {

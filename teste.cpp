@@ -19,7 +19,7 @@ string        strLower(string s);
 void          showBoard();
 void          setLines(int l);
 void          setColumns(int c);
-void          setInGameBoard(vector<vector<char> >b);
+void          setInGameBoard(vector<string>b);
 bool          addWord(string word);
 bool          removeWord(string word, string Reference);
 int           convertLetter(char l, bool upper);
@@ -191,20 +191,19 @@ vector<string>Dictionary::searchWord(string word)
   return words;
 }
 
-Board::Board()
-{
-    lines = 2;
-    columns = 2;
-    vector<vector<char> > words(lines, vector<char>(columns, '.'));
-    setInGameBoard(words);
-}
-
-
 Board::Board(int lin, int col)
 {
   setLines(lin);
   setColumns(col);
-  vector<vector<char> > words(lin, vector<char>(col, '.'));
+  vector<string> words;
+  char aux[col];
+
+  for (int i = 0; i < col; i++) {
+      aux[i] = '.';
+  }
+  for (int i = 0; i < lin; i++) {
+      words.push_back(aux);
+  }
   setInGameBoard(words);
 }
 
@@ -241,7 +240,7 @@ void Board::setColumns(int c)
   columns = c;
 }
 
-void Board::setInGameBoard(vector<vector<char> >b)
+void Board::setInGameBoard(vector<string> b)
 {
   inGameBoard = b;
 }
@@ -280,71 +279,88 @@ int Board::convertLetter(char l, bool upper)
 
 bool Board::addWord(string word, string Reference)
 {
-  int  l, c;
-  bool v;
+  unsigned int  l, c;
 
   l = convertLetter(Reference.at(0), true);
   c = convertLetter(Reference.at(1), false);
-
-  if (Reference.at(2) == 'V')
+  //Sentido ou tamanho mal-informado
+  if(Reference.at(2) != 'V' && Reference.at(2) != 'H')
   {
-    v = 1;
+      cout << "No Direction" << endl;
+      return false;
+  }
+  else if(Reference.at(2) == 'V' && word.size() > lines)
+  {
+      cout << "Word is too big" << endl;
+      return false;
+  }
+  else if(Reference.at(2) == 'H' && word.size() > columns)
+  {
+      cout << "Word is too big" << endl;
+      return false;
+  }
+  //Verifica se a posicao esta aceitavel
+  if (Reference.at(2) == 'H')
+  {
+      for (size_t i = 0, j = c; i < word.size(); i++, j++)
+      {
+          if(!((inGameBoard.at(l).at(j) == '.' || inGameBoard.at(l).at(j) == '#') || (inGameBoard.at(l).at(j) != '.' && inGameBoard.at(l).at(j) != '#' && inGameBoard.at(l).at(j) == word.at(i))))
+          {
+              cout << "Conflict with existing word" << endl;
+              return false;
+          }
+      }
   }
   else
   {
-    v = 0;
+      for (size_t i = 0, j = l; i < word.size(); i++, j++)
+      {
+          if(!((inGameBoard.at(j).at(c) == '.' || inGameBoard.at(j).at(c) == '#') || (inGameBoard.at(j).at(c) != '.' && inGameBoard.at(j).at(c) != '#' && inGameBoard.at(j).at(c) == word.at(i))))
+          {
+              cout << "Conflict with existing word" << endl;
+              return false;
+          }
+      }
   }
-
-  if (v)
+  if (Reference.at(2) == 'H')
   {
-    if (l + word.size() <= lines)
-    {
-      if (l - 1 >= 0)
+      //adiciona # anterior
+      int aux = c;
+      if(aux - 1 >= 0 && inGameBoard.at(l).at(aux - 1) == '.')
       {
-        inGameBoard.at(l - 1).at(c) = '#';
+          inGameBoard.at(l).at(aux - 1) = '#';
       }
-
-      for (size_t i = l; i < word.size() + l; i++)
+      //adiciona palavra
+      for (size_t i = 0; i < word.size(); i++, c++)
       {
-        inGameBoard.at(i).at(c) = word.at(i - l);
+          inGameBoard.at(l).at(c) = word.at(i);
       }
-
-      if (l + word.size() != lines)
+      //adiciona # posterior
+      if(c < columns && inGameBoard.at(l).at(c) == '.')
       {
-        inGameBoard.at(l + word.size()).at(c) = '#';
+          inGameBoard.at(l).at(c) = '#';
       }
-    }
-    else
-    {
-      cout << "Deu ruim" << endl;
-    }
   }
   else
   {
-    if (c + word.size() <= columns)
-    {
-      if (c - 1 >= 0)
+      //adiciona # anterior
+      int aux = l;
+      if(aux - 1 >= 0 && inGameBoard.at(aux - 1).at(c) == '.')
       {
-        inGameBoard.at(l).at(c - 1) = '#';
+          cout << "4.25" << endl;
+          inGameBoard.at(aux - 1).at(c) = '#';
       }
-
-      for (size_t i = c; i < word.size() + c; i++)
+      //adiciona palavra
+      for (size_t i = 0; i < word.size(); i++, l++)
       {
-        inGameBoard.at(l).at(i) = word.at(i - c);
+          inGameBoard.at(l).at(c) = word.at(i);
       }
-
-      if (c + word.size() != columns)
+      //adiciona # posterior
+      if(l < lines && inGameBoard.at(l).at(c) == '.')
       {
-        inGameBoard.at(l).at(c + word.size()) = '#';
+          inGameBoard.at(l).at(c) = '#';
       }
-    }
-    else
-    {
-      cout << "Deu ruim" << endl;
-    }
   }
-
-
   return true;
 }
 

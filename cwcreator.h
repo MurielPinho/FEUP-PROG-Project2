@@ -10,21 +10,20 @@ using namespace std;
 class Board {
 public:
 
-  Board ();
   Board(int lin, int col);
   void showBoard();
   bool addWord(string word, string Reference);
   bool removeWord(string word, string Reference);
   void setLines(int l);
   void setColumns(int c);
-  void setInGameBoard(vector<vector<char> >b);
+  void setInGameBoard(vector<string>b);
   int  convertLetter(char l, bool upper);
   char convertNumber(int n, bool upper);
 
 private:
 
   unsigned int lines, columns;
-  vector<vector<char> >inGameBoard;
+  vector<string> inGameBoard;
 };
 
 class Dictionary {
