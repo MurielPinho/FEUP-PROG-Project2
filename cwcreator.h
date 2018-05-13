@@ -9,7 +9,7 @@ using namespace std;
 
 class Board {
 public:
-
+  Board();
   Board(int lin, int col);
   void showBoard();
   bool addWord(string word, string Reference);
@@ -19,25 +19,26 @@ public:
   void setInGameBoard(vector<string>b);
   int  convertLetter(char l, bool upper);
   char convertNumber(int n, bool upper);
-
+  void writeInFile(ofstream& outfile);
 private:
-
   unsigned int lines, columns;
   vector<string> inGameBoard;
+
 };
 
 class Dictionary {
 public:
 
-  void          CreateDictionary();
+  void          CreateDictionary(ifstream& infile, string file4read);
   void          showDictionary();
   bool          VerifyWord(string word);
   vector<string>searchWord(string word);
   string        strFix(string s);
   string        strLower(string s);
-
+  void          setName(string name);
+  string        getName();
 private:
-
-  map<string, vector<string> >Synonyms;
+  string DictionaryName;
+  map<string, vector<string>>Synonyms;
   vector<string>inGameDictionary;
 };

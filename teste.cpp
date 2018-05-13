@@ -9,188 +9,10 @@
 using namespace std;
 
 
-void          beginProgram();
-int           options();
-void          CreateDictionary();
-void          puzzleCreator();
-bool          VerifyWord(string word);
-string        strFix(string s);
-string        strLower(string s);
-void          showBoard();
-void          setLines(int l);
-void          setColumns(int c);
-void          setInGameBoard(vector<string>b);
-bool          addWord(string word);
-bool          removeWord(string word, string Reference);
-int           convertLetter(char l, bool upper);
-char          convertNumber(int n,  bool upper);
-vector<string>searchWord(string word);
-
-void          Dictionary::CreateDictionary()
+Board::Board()
 {
-  string   file4read, file4write, line, key, synonym;
-  ifstream infile, outfile;
-  regex    reg("[A-Za-z: ,]+");
-  char    *tok = NULL, *write = NULL;
-  bool     FirstWord;
 
-  getline(cin, file4read);
-
-  infile.open(file4read);
-
-
-  if (infile.fail())
-  {
-    cerr << "Error opening file: " << file4read << endl;
-    exit(1);
-  }
-
-
-  while (!infile.eof())
-  {
-    // Conversao para char* com o objetivo de utilizar strtok
-    getline(infile, line);
-    write = new char[line.length() + 1];
-    strcpy(write, line.c_str());
-    FirstWord = true;
-
-
-    // Separação de palavras simples
-    if (regex_match(line, reg))
-    {
-      tok = strtok(write, ":,");
-
-      while (tok != NULL)
-      {
-        if (tok[0] == ' ') tok = &tok[1];
-
-        if (tok[strlen(tok) - 1] == ' ') tok[strlen(tok) - 1] = '\0';
-
-        if (FirstWord)
-        {
-          key = strFix(tok);
-          inGameDictionary.push_back(key);
-          FirstWord = false;
-        }
-        else
-        {
-          synonym = strLower(tok);
-          Synonyms[key].push_back(synonym);
-        }
-        tok = strtok(NULL, ":,");
-      }
-    }
-  }
-
-  infile.close();
 }
-
-void Dictionary::showDictionary()
-{
-  for (size_t i = 0; i < inGameDictionary.size(); i++)
-  {
-    cout << inGameDictionary.at(i) << endl;
-  }
-}
-
-bool Dictionary::VerifyWord(string word)
-
-{
-  string temp;
-
-  word = strFix(word);
-
-  for (size_t i = 0; i < inGameDictionary.size(); i++) {
-    temp = inGameDictionary.at(i);
-
-    if (word == temp)
-    {
-      return true;
-    }
-  }
-  return false;
-}
-
-string Dictionary::strFix(string s)
-{
-  bool first = true;
-
-  for (size_t i = 0; i < s.size(); i++)
-  {
-    if (first) {
-      if (islower(s.at(i)))
-      {
-        s.at(i) = toupper(s.at(i));
-      }
-      first = false;
-    }
-    else
-    {
-      if (isupper(s.at(i)))
-      {
-        s.at(i) = tolower(s.at(i));
-      }
-    }
-  }
-  return s;
-}
-
-string Dictionary::strLower(string s)
-{
-  for (size_t i = 0; i < s.size(); i++)
-  {
-    if (isupper(s.at(i)))
-    {
-      s.at(i) = tolower(s.at(i));
-    }
-  }
-  return s;
-}
-
-vector<string>Dictionary::searchWord(string word)
-{
-  vector<string> words;
-  int flag = 0;
-
-  for (size_t i = 0; i < inGameDictionary.size(); i++)
-  {
-    if (inGameDictionary.at(i).size() >= word.size())
-    {
-      for (size_t j = 0; j < word.size(); j++)
-      {
-        for (size_t k = 0; k < inGameDictionary.at(i).size(); k++)
-        {
-          if (tolower(word.at(j)) == tolower(inGameDictionary.at(i).at(k)))
-          {
-            flag = 1;
-            k    = inGameDictionary.at(i).size();
-          }
-          else
-          {
-            flag = 0;
-          }
-        }
-
-        if (flag == 0)
-        {
-          j = word.size();
-        }
-      }
-
-      if (flag != 0)
-      {
-        words.push_back(inGameDictionary.at(i));
-      }
-    }
-  }
-
-  for (size_t i = 0; i < words.size(); i++)
-  {
-    cout << words.at(i) << endl;
-  }
-  return words;
-}
-
 Board::Board(int lin, int col)
 {
   setLines(lin);
@@ -209,7 +31,6 @@ Board::Board(int lin, int col)
 
 void Board::showBoard()
 {
-  //system("clear");
   cout << "   ";
 
   for (unsigned int i = 0; i < columns; i++)
@@ -420,4 +241,177 @@ bool Board::removeWord(string word, string Reference)
   }
 
   return true;
+}
+void Board::writeInFile(ofstream& outfile)
+{
+      for (unsigned int i = 0; i < lines; i++)
+      {
+        for (size_t j = 0; j < columns; j++)
+        {
+          outfile << inGameBoard.at(i).at(j) << " ";
+        }
+        outfile << endl;
+      }
+      outfile << endl;
+}
+
+void Dictionary::CreateDictionary(ifstream& infile, string file4read)
+{
+  string    line, key, synonym;
+//  ifstream infile;
+  regex    reg("[A-Za-z: ,]+");
+  char    *tok = NULL, *write = NULL;
+  bool     FirstWord;
+
+
+  while (!infile.eof())
+  {
+    // Conversao para char* com o objetivo de utilizar strtok
+    getline(infile, line);
+    write = new char[line.length() + 1];
+    strcpy(write, line.c_str());
+    FirstWord = true;
+
+
+    // Separação de palavras simples
+    if (regex_match(line, reg))
+    {
+      tok = strtok(write, ":,");
+
+      while (tok != NULL)
+      {
+        if (tok[0] == ' ') tok = &tok[1];
+
+        if (tok[strlen(tok) - 1] == ' ') tok[strlen(tok) - 1] = '\0';
+
+        if (FirstWord)
+        {
+          key = strFix(tok);
+          inGameDictionary.push_back(key);
+          FirstWord = false;
+        }
+        else
+        {
+          synonym = strLower(tok);
+          Synonyms[key].push_back(synonym);
+        }
+        tok = strtok(NULL, ":,");
+      }
+    }
+  }
+  setName(file4read);
+}
+
+void Dictionary::showDictionary()
+{
+  for (size_t i = 0; i < inGameDictionary.size(); i++)
+  {
+    cout << inGameDictionary.at(i) << endl;
+  }
+}
+
+bool Dictionary::VerifyWord(string word)
+
+{
+  string temp;
+
+  word = strFix(word);
+
+  for (size_t i = 0; i < inGameDictionary.size(); i++) {
+    temp = inGameDictionary.at(i);
+
+    if (word == temp)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+string Dictionary::strFix(string s)
+{
+  bool first = true;
+
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    if (first) {
+      if (islower(s.at(i)))
+      {
+        s.at(i) = toupper(s.at(i));
+      }
+      first = false;
+    }
+    else
+    {
+      if (isupper(s.at(i)))
+      {
+        s.at(i) = tolower(s.at(i));
+      }
+    }
+  }
+  return s;
+}
+
+string Dictionary::strLower(string s)
+{
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    if (isupper(s.at(i)))
+    {
+      s.at(i) = tolower(s.at(i));
+    }
+  }
+  return s;
+}
+
+vector<string>Dictionary::searchWord(string word)
+{
+  vector<string> words;
+  int flag = 0;
+
+  for (size_t i = 0; i < inGameDictionary.size(); i++)
+  {
+    if (inGameDictionary.at(i).size() >= word.size())
+    {
+      for (size_t j = 0; j < word.size(); j++)
+      {
+        for (size_t k = 0; k < inGameDictionary.at(i).size(); k++)
+        {
+          if (tolower(word.at(j)) == tolower(inGameDictionary.at(i).at(k)))
+          {
+            flag = 1;
+            k    = inGameDictionary.at(i).size();
+          }
+          else
+          {
+            flag = 0;
+          }
+        }
+
+        if (flag == 0)
+        {
+          j = word.size();
+        }
+      }
+
+      if (flag != 0)
+      {
+        words.push_back(inGameDictionary.at(i));
+      }
+    }
+  }
+
+  for (size_t i = 0; i < words.size(); i++)
+  {
+    cout << words.at(i) << endl;
+  }
+  return words;
+}
+void Dictionary::setName(string name)
+{
+    DictionaryName = name;
+}
+string Dictionary::getName()
+{
+    return DictionaryName;
 }
