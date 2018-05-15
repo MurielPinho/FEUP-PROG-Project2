@@ -13,9 +13,11 @@ using namespace std;
 void beginProgram();
 int  options();
 bool  puzzleCreator(Dictionary& crosswords, Board& game);
+void puzzleLoad(Dictionary& crosswords, Board& game);
 void strUpper(string &s);
 bool Board2File(Dictionary crosswords, Board game);
-
+bool wordControl(Dictionary crosswords, Board& game);
+char resumeOrFinish();
 
 
 map <string, string> addedWords;
@@ -44,7 +46,6 @@ int  main()
                   cout << "Board saved" << endl;
               }
               addedWords.clear();
-//              cin.clear();
           }
           else
           {
@@ -54,8 +55,20 @@ int  main()
       }
       else if (opt == 2)
       {
-          //puzzleLoad();
-          cout << "de passas" << endl;
+          puzzleLoad(crosswords, game);
+          if(!wordControl(crosswords, game))
+          {
+              cout << "Board Full" << endl;
+          }
+          else
+          {
+              cin.clear();
+          }
+          if(Board2File(crosswords, game))
+          {
+              cout << "Board saved" << endl;
+          }
+          addedWords.clear();
       }
       else
       {
@@ -66,7 +79,6 @@ int  main()
 
   return 0;
 }
-
 
 void beginProgram()
 {
@@ -127,66 +139,26 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
   }
 
   crosswords.CreateDictionary(infile, file4read);
-  cout << "Board size (lines columns) ?" << endl;
-  cin >> lines >> columns;
+  do {
+      cout << "Board size (lines columns) ? ";
+      cin >> lines >> columns;
+  } while((lines < 1 && lines > 26) || (columns < 1 && columns > 26));
   cin.clear();
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
   Board aux(lines, columns);
   game = aux;
 
-  game.showBoard();
-  /*if(Iniciar funcionalizaçao)
-  {
-      return 1;
-  }
-  else
-  {
-      return 2;
-  }*/
-//Iniciar funcionalizaçao
-  while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
-  {
-    cout << "Word ( - = remove / ? = help ) ? ";
-    getline(cin, word);
-
-    if (word == "-")
-    {
-      strUpper(word);
-      game.removeWord(word, lcd);
-    }
-    else if (word == "?")
-    {
-      crosswords.showDictionary();
-    }
-    else
-    {
-      if(crosswords.VerifyWord(word))
-      {
-          strUpper(word);
-          if(!game.addWord(word, lcd))
-          {
-              cout << "Word has not been added" << endl;
-          }
-          else
-          {
-              addedWords.insert(pair<string, string>(lcd, word));
-          }
-      }
-      else
-      {
-          cout << "Word does not exist" << endl;
-      }
-    }
-    game.showBoard();
-  }
-
-  if(cin.eof())
+  if(wordControl(crosswords, game))
   {
       return true;
   }
-//terminar funcionalizaçao
+  else
+  {
+      cout << "Board is Full" << endl;
+      return true;
+  }
   infile.close();
-
+  return true;
 }
 bool Board2File(Dictionary crosswords, Board game)
 {
@@ -209,13 +181,13 @@ bool Board2File(Dictionary crosswords, Board game)
     }
     else
     {
-        cout << "Save file ?";
+        cout << "Save file ? ";
         getline(cin, file4write);
 
         outfile.open(file4write);
         if (outfile.fail())
     	{
-    		cerr << "Error opening file: " << file4write << endl;
+    		cerr << "Error opening file" << endl;
     		exit(1);
     	}
 
@@ -225,9 +197,149 @@ bool Board2File(Dictionary crosswords, Board game)
 
         for (const auto & x : addedWords)
         {
-          outfile << x.first << " - " << x.second << endl;
+          outfile << x.first << " " << x.second << endl;
         }
         outfile.close();
     }
     return true;
+}
+
+void puzzleLoad(Dictionary& crosswords, Board& game)
+{
+    int troca = 0, l;
+    ifstream infile, dictionaryInfile;
+    string file4read, line, word, key;
+    vector<string> aux;
+
+
+    cout << "Load File ? " ;
+    getline(cin, file4read);
+
+    infile.open(file4read);
+
+    if(infile.fail())
+    {
+        cerr << "Error opening file" << endl;
+        exit(1);
+    }
+
+    while (!infile.eof())
+    {
+        getline(infile, line);
+        // cout << line << endl;
+        // cout << troca << endl;
+        if (line ==  "")
+        {
+            ++troca;
+        }
+        else if(troca == 0)
+        {
+            string name;
+            crosswords.setName(line);
+            name = crosswords.getName();
+            dictionaryInfile.open(name);
+            if(infile.fail())
+            {
+                cerr << "Error opening file: " << name << endl;
+                exit(1);
+            }
+            crosswords.CreateDictionary(dictionaryInfile, name);
+        }
+        else if (troca == 1)
+        {
+            aux.push_back(line);
+        }
+        else if (troca == 2)
+        {
+            key = line.substr(0,3);
+            l = line.find(" ");
+            l = l + 1;
+            word = line.substr(l);
+            addedWords.insert(pair<string, string>(key, word));
+        }
+    }
+    game.setLines(aux.size());
+    game.setColumns(aux.at(0).size());
+    game.setInGameBoard(aux);
+    infile.close();
+}
+
+bool wordControl(Dictionary crosswords, Board& game)
+{
+    string lcd, word;
+    std::map<string, string>::iterator position;
+
+    game.showBoard();
+    while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
+    {
+      cout << "Word ( - = remove / ? = help ) ? ";
+      getline(cin, word);
+
+      if (word == "-")
+      {
+        position = addedWords.find(lcd);
+        if(position != addedWords.end())
+        {
+            game.removeWord(addedWords.find(lcd)->second, lcd);
+        }
+        else
+        {
+            cout << "No word to remove" << endl;
+        }
+      }
+      else if (word == "?")
+      {
+        crosswords.showDictionary();
+      }
+      else
+      {
+        if(crosswords.VerifyWord(word))
+        {
+            strUpper(word);
+            if(!game.addWord(word, lcd))
+            {
+                cout << "Word has not been added" << endl;
+            }
+            else
+            {
+                addedWords.insert(pair<string, string>(lcd, word));
+            }
+        }
+        else
+        {
+            cout << "Word does not exist" << endl;
+        }
+      }
+      game.showBoard();
+      if(game.fullBoard())
+      {
+          return false;
+      }
+    }
+
+    if(cin.eof())
+    {
+        cin.clear();
+        if(resumeOrFinish() == 'f')
+        {
+            game.fillBoard();
+        }
+        return true;
+    }
+    return false;
+}
+char resumeOrFinish()
+{
+    char aux;
+    cout << "Save for later or Finish (s / f) ? ";
+
+    do {
+        cin >> aux;
+    } while(aux != 's' && aux != 'f');
+
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+
+    return aux;
 }

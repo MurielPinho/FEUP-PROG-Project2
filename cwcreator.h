@@ -6,6 +6,9 @@
 
 using namespace std;
 
+void setcolor(unsigned int color);
+void setcolor(unsigned int color, unsigned int background_color);
+
 
 class Board {
 public:
@@ -13,13 +16,15 @@ public:
   Board(int lin, int col);
   void showBoard();
   bool addWord(string word, string Reference);
-  bool removeWord(string word, string Reference);
+  void removeWord(string word, string Reference);
   void setLines(int l);
   void setColumns(int c);
   void setInGameBoard(vector<string>b);
   int  convertLetter(char l, bool upper);
   char convertNumber(int n, bool upper);
   void writeInFile(ofstream& outfile);
+  bool fullBoard();
+  void fillBoard();
 private:
   unsigned int lines, columns;
   vector<string> inGameBoard;
