@@ -397,7 +397,7 @@ void Dictionary::CreateDictionary(ifstream& infile, string file4read)
 
 void Dictionary::showDictionary(string Reference, int lines, int columns)
 {
-  int size;
+  unsigned int size;
   if (Reference.at(2) != 'H')
   {
     size = lines -((int)Reference.at(0) - 65) ;
@@ -409,7 +409,7 @@ void Dictionary::showDictionary(string Reference, int lines, int columns)
   }
   for (size_t i = 0; i < inGameDictionary.size(); i++)
   {
-    if (inGameDictionary.at(i).size()<= size)
+    if (inGameDictionary.at(i).size() <= size)
     {
       cout << inGameDictionary.at(i) << endl;
     }
