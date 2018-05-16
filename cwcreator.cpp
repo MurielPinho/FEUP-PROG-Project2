@@ -12,14 +12,13 @@ using namespace std;
 
 void beginProgram();
 int  options();
-bool  puzzleCreator(Dictionary& crosswords, Board& game);
+bool puzzleCreator(Dictionary& crosswords, Board& game);
 void puzzleLoad(Dictionary& crosswords, Board& game);
-void strUpper(string &s);
+void strUpper(string& s);
 bool Board2File(Dictionary crosswords, Board game);
 bool wordControl(Dictionary crosswords, Board& game);
 char resumeOrFinish();
 bool verifyInput(string Reference);
-
 
 
 int  main()
@@ -28,51 +27,55 @@ int  main()
   string word;
   Dictionary crosswords;
   Board game;
+
   vector<string> words;
 
   beginProgram();
 
   opt = options();
 
-  while(opt != 0)
+  while (opt != 0)
   {
-      if(opt == 1)
+    if (opt == 1)
+    {
+      if (puzzleCreator(crosswords, game))
       {
-          if(puzzleCreator(crosswords, game))
-          {
-              cin.clear();
-              if(Board2File(crosswords, game))
-              {
-                  cout << "Board saved" << endl;
-              }
-          }
-          else
-          {
-              cerr << "Error opening file" << endl;
-              exit(1);
-          }
-      }
-      else if (opt == 2)
-      {
-          puzzleLoad(crosswords, game);
-          if(!wordControl(crosswords, game))
-          {
-              cout << "Board Full" << endl;
-          }
-          else
-          {
-              cin.clear();
-          }
-          if(Board2File(crosswords, game))
-          {
-              cout << "Board saved" << endl;
-          }
+        cin.clear();
+
+        if (Board2File(crosswords, game))
+        {
+          cout << "Board saved" << endl;
+        }
       }
       else
       {
-          cout << "Invalid option" << endl;
+        cerr << "Error opening file" << endl;
+        exit(1);
       }
-      opt = options();
+    }
+    else if (opt == 2)
+    {
+      puzzleLoad(crosswords, game);
+
+      if (!wordControl(crosswords, game))
+      {
+        cout << "Board Full" << endl;
+      }
+      else
+      {
+        cin.clear();
+      }
+
+      if (Board2File(crosswords, game))
+      {
+        cout << "Board saved" << endl;
+      }
+    }
+    else
+    {
+      cout << "Invalid option" << endl;
+    }
+    opt = options();
   }
 
   return 0;
@@ -89,15 +92,15 @@ void beginProgram()
   cout << endl << "--------------------------------------------------" << endl << endl;
 }
 
-void strUpper(string &s)
+void strUpper(string& s)
 {
-    for(size_t i = 0; i < s.size(); i++)
+  for (size_t i = 0; i < s.size(); i++)
+  {
+    if (islower(s.at(i)))
     {
-        if(islower(s.at(i)))
-        {
-            s.at(i) = toupper(s.at(i));
-        }
+      s.at(i) = toupper(s.at(i));
     }
+  }
 }
 
 int options()
@@ -118,7 +121,7 @@ int options()
 
 bool puzzleCreator(Dictionary& crosswords, Board& game)
 {
-  string lcd, word, file4read;
+  string   lcd, word, file4read;
   ifstream infile;
   int lines, columns;
 
@@ -133,218 +136,231 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
 
   if (infile.fail())
   {
-      return false;
+    return false;
   }
 
   crosswords.CreateDictionary(infile, file4read);
+
   do {
-      cout << "Board size (lines columns) ? " << endl;
-      cin >> lines >> columns;
-  } while(lines < 1 || lines > 26 || columns < 1 || columns > 26);
+    cout << "Board size (lines columns) ? " << endl;
+    cin >> lines >> columns;
+  } while (lines < 1 || lines > 26 || columns < 1 || columns > 26);
   cin.clear();
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
   Board aux(lines, columns);
   game = aux;
 
-  if(wordControl(crosswords, game))
+  if (wordControl(crosswords, game))
   {
-      return true;
+    return true;
   }
   else
   {
-      cout << "Board is Full" << endl;
-      return true;
+    cout << "Board is Full" << endl;
+    return true;
   }
   infile.close();
   return true;
 }
+
 bool Board2File(Dictionary crosswords, Board game)
 {
-    char aux;
-    ofstream outfile;
-    string file4write;
+  char aux;
+  ofstream outfile;
+  string   file4write;
 
-    do
+  do
+  {
+    cout << "Save in File (y / n) ? ";
+    cin >> aux;
+  } while (aux != 'y' && aux != 'n');
+
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+  if (aux == 'n')
+  {
+    return false;
+  }
+  else
+  {
+    cout << "Save file ? ";
+    getline(cin, file4write);
+
+    outfile.open(file4write);
+
+    if (outfile.fail())
     {
-        cout << "Save in File (y / n) ? ";
-        cin >> aux;
-    } while(aux!= 'y' && aux!='n');
-
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    if(aux == 'n')
-    {
-        return false;
+      cerr << "Error opening file" << endl;
+      exit(1);
     }
-    else
-    {
-        cout << "Save file ? ";
-        getline(cin, file4write);
 
-        outfile.open(file4write);
-        if (outfile.fail())
-    	{
-    		cerr << "Error opening file" << endl;
-    		exit(1);
-    	}
+    outfile << crosswords.getName() << endl << endl;
 
-        outfile << crosswords.getName() << endl << endl;
+    game.writeInFile(outfile);
 
-        game.writeInFile(outfile);
-
-        outfile.close();
-    }
-    return true;
+    outfile.close();
+  }
+  return true;
 }
 
 void puzzleLoad(Dictionary& crosswords, Board& game)
 {
-    int troca = 0, l;
-    ifstream infile, dictionaryInfile;
-    string file4read, line, word, key;
-    vector<string> aux;
+  int troca = 0, l;
+  ifstream infile, dictionaryInfile;
+  string   file4read, line, word, key;
+
+  vector<string> aux;
 
 
-    cout << "Load File ? " ;
-    getline(cin, file4read);
+  cout << "Load File ? ";
+  getline(cin, file4read);
 
-    infile.open(file4read);
+  infile.open(file4read);
 
-    if(infile.fail())
+  if (infile.fail())
+  {
+    cerr << "Error opening file" << endl;
+    exit(1);
+  }
+
+  while (!infile.eof())
+  {
+    getline(infile, line);
+
+    if (line ==  "")
     {
-        cerr << "Error opening file" << endl;
+      ++troca;
+    }
+    else if (troca == 0)
+    {
+      string name;
+      crosswords.setName(line);
+      name = crosswords.getName();
+      dictionaryInfile.open(name);
+
+      if (infile.fail())
+      {
+        cerr << "Error opening file: " << name << endl;
         exit(1);
+      }
+      crosswords.CreateDictionary(dictionaryInfile, name);
     }
-
-    while (!infile.eof())
+    else if (troca == 1)
     {
-        getline(infile, line);
-        if (line ==  "")
-        {
-            ++troca;
-        }
-        else if(troca == 0)
-        {
-            string name;
-            crosswords.setName(line);
-            name = crosswords.getName();
-            dictionaryInfile.open(name);
-            if(infile.fail())
-            {
-                cerr << "Error opening file: " << name << endl;
-                exit(1);
-            }
-            crosswords.CreateDictionary(dictionaryInfile, name);
-        }
-        else if (troca == 1)
-        {
-            aux.push_back(line);
-        }
-        else if (troca == 2)
-        {
-            key = line.substr(0,3);
-            l = line.find(" ");
-            l = l + 1;
-            word = line.substr(l);
-            game.insertInMap(key, word);
-        }
+      aux.push_back(line);
     }
-    game.setLines(aux.size());
-    game.setColumns(aux.at(0).size());
-    game.setInGameBoard(aux);
-    infile.close();
+    else if (troca == 2)
+    {
+      key  = line.substr(0, 3);
+      l    = line.find(" ");
+      l    = l + 1;
+      word = line.substr(l);
+      game.insertInMap(key, word);
+    }
+  }
+  game.setLines(aux.size());
+  game.setColumns(aux.at(0).size());
+  game.setInGameBoard(aux);
+  infile.close();
 }
 
 bool wordControl(Dictionary crosswords, Board& game)
 {
-    string lcd, word;
+  string lcd, word;
 
-    game.showBoard();
-    while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
+  game.showBoard();
+
+  while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
+  {
+    cout << "Word ( - = remove / ? = help ) ? ";
+    getline(cin, word);
+
+    if (verifyInput(lcd))
     {
-      cout << "Word ( - = remove / ? = help ) ? ";
-      getline(cin, word);
-      if (verifyInput(lcd))
+      if (word == "-")
       {
-
-            if (word == "-")
-            {
-              if (!game.removeWord(lcd))
-              {
-                cout << "Couldn't find word " << endl;
-              }
-            }
-            else if (word == "?")
-            {
-              crosswords.showDictionary(lcd, game.getLines(), game.getColumns());
-            }
-            else
-            {
-              if(crosswords.VerifyWord(word))
-              {
-                  strUpper(word);
-                  if(!game.addWord(word, lcd))
-                  {
-                      cout << "Word has not been added" << endl;
-                  }
-                  else
-                  {
-                      game.insertInMap(lcd, word);
-                  }
-              }
-              else
-              {
-                  cout << "Word does not exist" << endl;
-              }
-            }
-            if(game.fullBoard())
-            {
-                return false;
-            }
-            if(cin.eof())
-            {
-                cin.clear();
-                if(resumeOrFinish() == 'f')
-                {
-                    game.fillBoard();
-                }
-                return true;
-            }
+        if (!game.removeWord(lcd))
+        {
+          cout << "Couldn't find word " << endl;
+        }
+      }
+      else if (word == "?")
+      {
+        crosswords.showDictionary(lcd, game.getLines(), game.getColumns());
       }
       else
       {
-        cout << "Invalid input" << endl;
+        if (crosswords.VerifyWord(word))
+        {
+          strUpper(word);
+
+          if (!game.addWord(word, lcd))
+          {
+            cout << "Word has not been added" << endl;
+          }
+          else
+          {
+            game.insertInMap(lcd, word);
+          }
+        }
+        else
+        {
+          cout << "Word does not exist" << endl;
+        }
       }
-      game.showBoard();
+
+      if (game.fullBoard())
+      {
+        return false;
+      }
+
+      if (cin.eof())
+      {
+        cin.clear();
+
+        if (resumeOrFinish() == 'f')
+        {
+          game.fillBoard();
+        }
+        return true;
+      }
     }
-    return false;
+    else
+    {
+      cout << "Invalid input" << endl;
+    }
+    game.showBoard();
+  }
+  return false;
 }
 
 char resumeOrFinish()
 {
-    char aux;
+  char aux;
 
-    do {
-        cout << "Save for later or Finish (s / f) ? ";
-        cin >> aux;
-    } while(aux != 's' && aux != 'f');
+  do {
+    cout << "Save for later or Finish (s / f) ? ";
+    cin >> aux;
+  } while (aux != 's' && aux != 'f');
 
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 
-    return aux;
+  return aux;
 }
 
 bool verifyInput(string Reference)
 {
-  char l,c;
+  char l, c;
+
   l = Reference.at(0);
   c = Reference.at(1);
-  if (l >= 'A' && l <= 'Z')
+
+  if ((l >= 'A') && (l <= 'Z'))
   {
-    if (c >= 'a' && c <= 'z')
+    if ((c >= 'a') && (c <= 'z'))
     {
       return true;
     }

@@ -13,22 +13,17 @@ using namespace std;
 
 int main()
 {
+  Board w;
+  int   lin, col;
 
-    Board w;
-    int lin, col;
+  w.showBoard();
+  cout << endl;
+  cin >> lin;
+  cin >> col;
+  Board q(lin, col);
+  q.showBoard();
 
-    w.showBoard();
-    cout << endl;
-    cin >> lin;
-    cin >> col;
-    Board q(lin, col);
-    q.showBoard();
-
-    return 0;
-
-
-
-
+  return 0;
 
 
   // int lin, col;

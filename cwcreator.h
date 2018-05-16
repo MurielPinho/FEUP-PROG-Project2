@@ -12,6 +12,7 @@ void setcolor(unsigned int color, unsigned int background_color);
 
 class Board {
 public:
+
   Board();
   Board(int lin, int col);
   void showBoard();
@@ -19,8 +20,8 @@ public:
   bool removeWord(string Reference);
   void setLines(int l);
   void setColumns(int c);
-  int getLines();
-  int getColumns();
+  int  getLines();
+  int  getColumns();
   void setInGameBoard(vector<string>b);
   int  convertLetter(char l, bool upper);
   char convertNumber(int n, bool upper);
@@ -30,11 +31,12 @@ public:
   void insertInMap(string key, string value);
   void showMap();
   void rewriteBoard();
-private:
-  unsigned int lines, columns;
-  vector<string> inGameBoard;
-  map <string, string> addedWords;
 
+private:
+
+  unsigned int lines, columns;
+  vector<string>inGameBoard;
+  map<string, string>addedWords;
 };
 
 class Dictionary {
@@ -48,8 +50,10 @@ public:
   string        strLower(string s);
   void          setName(string name);
   string        getName();
+
 private:
+
   string DictionaryName;
-  map<string, vector<string>>Synonyms;
+  map<string, vector<string> >Synonyms;
   vector<string>inGameDictionary;
 };
