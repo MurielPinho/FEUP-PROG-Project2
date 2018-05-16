@@ -25,9 +25,12 @@ public:
   void writeInFile(ofstream& outfile);
   bool fullBoard();
   void fillBoard();
+  void insertInMap(string key, string value);
+  void showMap();
 private:
   unsigned int lines, columns;
   vector<string> inGameBoard;
+  map <string, string> addedWords;
 
 };
 

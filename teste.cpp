@@ -302,7 +302,26 @@ void Board::writeInFile(ofstream& outfile)
         }
         outfile << endl;
       }
+
       outfile << endl;
+
+      for (const auto & x : addedWords)
+      {
+        outfile << x.first << " " << x.second << endl;
+      }
+}
+
+void Board::insertInMap(string key, string value)
+{
+    addedWords.insert(pair<string, string>(key, value));
+}
+
+void Board::showMap()
+{
+    for (const auto & x : addedWords)
+    {
+      cout << x.first << " " << x.second << endl;
+    }
 }
 
 bool Board::fullBoard()

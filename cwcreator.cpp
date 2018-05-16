@@ -20,7 +20,6 @@ bool wordControl(Dictionary crosswords, Board& game);
 char resumeOrFinish();
 
 
-map <string, string> addedWords;
 
 int  main()
 {
@@ -45,7 +44,6 @@ int  main()
               {
                   cout << "Board saved" << endl;
               }
-              addedWords.clear();
           }
           else
           {
@@ -68,7 +66,6 @@ int  main()
           {
               cout << "Board saved" << endl;
           }
-          addedWords.clear();
       }
       else
       {
@@ -142,7 +139,7 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
   do {
       cout << "Board size (lines columns) ? ";
       cin >> lines >> columns;
-  } while((lines < 1 && lines > 26) || (columns < 1 && columns > 26));
+  } while(lines < 1 || lines > 26 || columns < 1 || columns > 26);
   cin.clear();
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
   Board aux(lines, columns);
@@ -195,10 +192,6 @@ bool Board2File(Dictionary crosswords, Board game)
 
         game.writeInFile(outfile);
 
-        for (const auto & x : addedWords)
-        {
-          outfile << x.first << " " << x.second << endl;
-        }
         outfile.close();
     }
     return true;
@@ -226,8 +219,6 @@ void puzzleLoad(Dictionary& crosswords, Board& game)
     while (!infile.eof())
     {
         getline(infile, line);
-        // cout << line << endl;
-        // cout << troca << endl;
         if (line ==  "")
         {
             ++troca;
@@ -255,7 +246,7 @@ void puzzleLoad(Dictionary& crosswords, Board& game)
             l = line.find(" ");
             l = l + 1;
             word = line.substr(l);
-            addedWords.insert(pair<string, string>(key, word));
+            game.insertInMap(key, word);
         }
     }
     game.setLines(aux.size());
@@ -267,7 +258,7 @@ void puzzleLoad(Dictionary& crosswords, Board& game)
 bool wordControl(Dictionary crosswords, Board& game)
 {
     string lcd, word;
-    std::map<string, string>::iterator position;
+    //std::map<string, string>::iterator position;
 
     game.showBoard();
     while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
@@ -277,15 +268,16 @@ bool wordControl(Dictionary crosswords, Board& game)
 
       if (word == "-")
       {
-        position = addedWords.find(lcd);
-        if(position != addedWords.end())
-        {
-            game.removeWord(addedWords.find(lcd)->second, lcd);
-        }
-        else
-        {
-            cout << "No word to remove" << endl;
-        }
+        //position = addedWords.find(lcd);
+        // if(position != addedWords.end())
+        // {
+        //     game.removeWord(addedWords.find(lcd)->second, lcd);
+        // }
+        // else
+        // {
+        //     cout << "No word to remove" << endl;
+        // }
+        game.showMap();
       }
       else if (word == "?")
       {
@@ -302,7 +294,7 @@ bool wordControl(Dictionary crosswords, Board& game)
             }
             else
             {
-                addedWords.insert(pair<string, string>(lcd, word));
+                game.insertInMap(lcd, word);
             }
         }
         else
@@ -331,9 +323,9 @@ bool wordControl(Dictionary crosswords, Board& game)
 char resumeOrFinish()
 {
     char aux;
-    cout << "Save for later or Finish (s / f) ? ";
 
     do {
+        cout << "Save for later or Finish (s / f) ? ";
         cin >> aux;
     } while(aux != 's' && aux != 'f');
 
