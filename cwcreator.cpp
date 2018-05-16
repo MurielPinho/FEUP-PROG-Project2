@@ -18,6 +18,7 @@ void strUpper(string &s);
 bool Board2File(Dictionary crosswords, Board game);
 bool wordControl(Dictionary crosswords, Board& game);
 char resumeOrFinish();
+bool verifyInput(string Reference);
 
 
 
@@ -137,7 +138,7 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
 
   crosswords.CreateDictionary(infile, file4read);
   do {
-      cout << "Board size (lines columns) ? ";
+      cout << "Board size (lines columns) ? " << endl;
       cin >> lines >> columns;
   } while(lines < 1 || lines > 26 || columns < 1 || columns > 26);
   cin.clear();
@@ -258,68 +259,68 @@ void puzzleLoad(Dictionary& crosswords, Board& game)
 bool wordControl(Dictionary crosswords, Board& game)
 {
     string lcd, word;
-    //std::map<string, string>::iterator position;
 
     game.showBoard();
     while (cout << "Position ( LCD / CRTL-Z = stop ) ? ", getline(cin, lcd))
     {
       cout << "Word ( - = remove / ? = help ) ? ";
       getline(cin, word);
+      if (verifyInput(lcd))
+      {
 
-      if (word == "-")
-      {
-        //position = addedWords.find(lcd);
-        // if(position != addedWords.end())
-        // {
-        //     game.removeWord(addedWords.find(lcd)->second, lcd);
-        // }
-        // else
-        // {
-        //     cout << "No word to remove" << endl;
-        // }
-        game.showMap();
-      }
-      else if (word == "?")
-      {
-        crosswords.showDictionary();
-      }
-      else
-      {
-        if(crosswords.VerifyWord(word))
-        {
-            strUpper(word);
-            if(!game.addWord(word, lcd))
+            if (word == "-")
             {
-                cout << "Word has not been added" << endl;
+              if (!game.removeWord(lcd))
+              {
+                cout << "Couldn't find word " << endl;
+              }
+            }
+            else if (word == "?")
+            {
+              crosswords.showDictionary(lcd, game.getLines(), game.getColumns());
             }
             else
             {
-                game.insertInMap(lcd, word);
+              if(crosswords.VerifyWord(word))
+              {
+                  strUpper(word);
+                  if(!game.addWord(word, lcd))
+                  {
+                      cout << "Word has not been added" << endl;
+                  }
+                  else
+                  {
+                      game.insertInMap(lcd, word);
+                  }
+              }
+              else
+              {
+                  cout << "Word does not exist" << endl;
+              }
             }
-        }
-        else
-        {
-            cout << "Word does not exist" << endl;
-        }
+            if(game.fullBoard())
+            {
+                return false;
+            }
+            if(cin.eof())
+            {
+                cin.clear();
+                if(resumeOrFinish() == 'f')
+                {
+                    game.fillBoard();
+                }
+                return true;
+            }
+      }
+      else
+      {
+        cout << "Invalid input" << endl;
       }
       game.showBoard();
-      if(game.fullBoard())
-      {
-          return false;
-      }
-    }
-
-    if(cin.eof())
-    {
-        cin.clear();
-        if(resumeOrFinish() == 'f')
-        {
-            game.fillBoard();
-        }
-        return true;
     }
     return false;
 }
+
 char resumeOrFinish()
 {
     char aux;
@@ -334,4 +335,19 @@ char resumeOrFinish()
 
 
     return aux;
+}
+
+bool verifyInput(string Reference)
+{
+  char l,c;
+  l = Reference.at(0);
+  c = Reference.at(1);
+  if (l >= 'A' && l <= 'Z')
+  {
+    if (c >= 'a' && c <= 'z')
+    {
+      return true;
+    }
+  }
+  return false;
 }

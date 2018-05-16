@@ -16,9 +16,11 @@ public:
   Board(int lin, int col);
   void showBoard();
   bool addWord(string word, string Reference);
-  void removeWord(string word, string Reference);
+  bool removeWord(string Reference);
   void setLines(int l);
   void setColumns(int c);
+  int getLines();
+  int getColumns();
   void setInGameBoard(vector<string>b);
   int  convertLetter(char l, bool upper);
   char convertNumber(int n, bool upper);
@@ -27,6 +29,7 @@ public:
   void fillBoard();
   void insertInMap(string key, string value);
   void showMap();
+  void rewriteBoard();
 private:
   unsigned int lines, columns;
   vector<string> inGameBoard;
@@ -38,7 +41,7 @@ class Dictionary {
 public:
 
   void          CreateDictionary(ifstream& infile, string file4read);
-  void          showDictionary();
+  void          showDictionary(string Reference, int lines, int columns);
   bool          VerifyWord(string word);
   vector<string>searchWord(string word);
   string        strFix(string s);
