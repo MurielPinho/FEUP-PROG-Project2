@@ -407,11 +407,6 @@ void Dictionary::showDictionary(string Reference, int lines, int columns)
     size = columns - ((int)Reference.at(1) - 97);
 
   }
-  cout << size << endl;
-  cout << lines << endl;
-  cout << columns << endl;
-
-
   for (size_t i = 0; i < inGameDictionary.size(); i++)
   {
     if (inGameDictionary.at(i).size()<= size)
