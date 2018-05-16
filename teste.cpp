@@ -4,46 +4,350 @@
 #include <fstream>
 #include <regex>
 #include <map>
+#include <ctime>
+#include <cstdlib>
+#include <windows.h>
+
 #include "cwcreator.h"
 
 using namespace std;
-
-
-void          beginProgram();
-int           options();
-void          CreateDictionary();
-void          puzzleCreator();
-bool          VerifyWord(string word);
-string        strFix(string s);
-string        strLower(string s);
-void          showBoard();
-void          setLines(int l);
-void          setColumns(int c);
-void          setInGameBoard(vector<vector<char> >b);
-bool          addWord(string word);
-bool          removeWord(string word, string Reference);
-int           convertLetter(char l, bool upper);
-char          convertNumber(int n,  bool upper);
-vector<string>searchWord(string word);
-
-void          Dictionary::CreateDictionary()
+//==========================================================================================
+//COLOR CODES: (alternative: use symbolic const’s)
+#define BLACK 0
+#define BLUE 1
+#define GREEN 2
+#define CYAN 3
+#define RED 4
+#define MAGENTA 5
+#define BROWN 6
+#define LIGHTGRAY 7
+#define DARKGRAY 8
+#define LIGHTBLUE 9
+#define LIGHTGREEN 10
+#define LIGHTCYAN 11
+#define LIGHTRED 12
+#define LIGHTMAGENTA 13
+#define YELLOW 14
+#define WHITE 15
+//==========================================================================================
+// Set text color
+void setcolor(unsigned int color)
 {
-  string   file4read, file4write, line, key, synonym;
-  ifstream infile, outfile;
+ HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+ SetConsoleTextAttribute(hcon, color);
+}
+//==========================================================================================
+void clrscr(void)
+{
+ COORD coordScreen = { 0, 0 }; // upper left corner
+ DWORD cCharsWritten;
+ DWORD dwConSize;
+ HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+ CONSOLE_SCREEN_BUFFER_INFO csbi;
+ GetConsoleScreenBufferInfo(hCon, &csbi);
+ dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+ // fill with spaces
+ FillConsoleOutputCharacter(hCon, TEXT(' '), dwConSize, coordScreen, &cCharsWritten);
+ GetConsoleScreenBufferInfo(hCon, &csbi);
+ FillConsoleOutputAttribute(hCon, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
+ // cursor to upper left corner
+ SetConsoleCursorPosition(hCon, coordScreen);
+}
+
+//==========================================================================================
+// Set text color & background
+void setcolor(unsigned int color, unsigned int background_color)
+{
+ HANDLE hCon = GetStdHandle(STD_OUTPUT_HANDLE);
+ if (background_color == BLACK)
+ SetConsoleTextAttribute(hCon, color);
+ else
+ SetConsoleTextAttribute(hCon, color | BACKGROUND_BLUE | BACKGROUND_GREEN |
+ BACKGROUND_RED);
+}
+
+
+Board::Board()
+{
+
+}
+Board::Board(int lin, int col)
+{
+  setLines(lin);
+  setColumns(col);
+  vector<string> words;
+  char aux[col];
+
+  for (int i = 0; i < col; i++) {
+      aux[i] = '.';
+  }
+  for (int i = 0; i < lin; i++) {
+      words.push_back(aux);
+  }
+  setInGameBoard(words);
+}
+
+void Board::showBoard()
+{
+  cout << "   ";
+
+  for (unsigned int i = 0; i < columns; i++)
+  {
+    setcolor(RED);
+    cout << convertNumber(i, false) << " ";
+  }
+  cout << endl;
+
+  for (unsigned int i = 0; i < lines; i++)
+  {
+    setcolor(RED);
+    cout << convertNumber(i, true) << " ";
+
+    for (size_t j = 0; j < columns; j++)
+    {
+        setcolor(BLACK, WHITE);
+      cout << " " << inGameBoard.at(i).at(j);
+    }
+    setcolor(7);
+    cout << endl;
+  }
+}
+
+void Board::setLines(int l)
+{
+  lines = l;
+}
+
+void Board::setColumns(int c)
+{
+  columns = c;
+}
+
+void Board::setInGameBoard(vector<string> b)
+{
+  inGameBoard = b;
+}
+
+char Board::convertNumber(int n,  bool upper)
+{
+  char c;
+
+  if (upper)
+  {
+    c = char(n + 65);
+    return c;
+  }
+  else
+  {
+    c = char(n + 97);
+    return c;
+  }
+  return '.';
+}
+
+int Board::convertLetter(char l, bool upper)
+{
+  if (upper)
+  {
+    l = int(l) - 65;
+    return l;
+  }
+  else
+  {
+    l = int(l) - 97;
+    return l;
+  }
+  return 0;
+}
+
+bool Board::addWord(string word, string Reference)
+{
+  unsigned int  l, c;
+
+  l = convertLetter(Reference.at(0), true);
+  c = convertLetter(Reference.at(1), false);
+  //Sentido ou tamanho mal-informado
+  if(Reference.at(2) != 'V' && Reference.at(2) != 'H')
+  {
+      cout << "No Direction" << endl;
+      return false;
+  }
+  else if(Reference.at(2) == 'V' && word.size() > lines)
+  {
+      cout << "Word is too big" << endl;
+      return false;
+  }
+  else if(Reference.at(2) == 'H' && word.size() > columns)
+  {
+      cout << "Word is too big" << endl;
+      return false;
+  }
+  //Verifica se a posicao esta aceitavel
+  if (Reference.at(2) == 'H')
+  {
+      for (size_t i = 0, j = c; i < word.size(); i++, j++)
+      {
+          if(!((inGameBoard.at(l).at(j) == '.' || inGameBoard.at(l).at(j) == '#') || (inGameBoard.at(l).at(j) != '.' && inGameBoard.at(l).at(j) != '#' && inGameBoard.at(l).at(j) == word.at(i))))
+          {
+              cout << "Conflict with existing word" << endl;
+              return false;
+          }
+      }
+  }
+  else
+  {
+      for (size_t i = 0, j = l; i < word.size(); i++, j++)
+      {
+          if(!((inGameBoard.at(j).at(c) == '.' || inGameBoard.at(j).at(c) == '#') || (inGameBoard.at(j).at(c) != '.' && inGameBoard.at(j).at(c) != '#' && inGameBoard.at(j).at(c) == word.at(i))))
+          {
+              cout << "Conflict with existing word" << endl;
+              return false;
+          }
+      }
+  }
+  if (Reference.at(2) == 'H')
+  {
+      //adiciona # anterior
+      int aux = c;
+      if(aux - 1 >= 0 && inGameBoard.at(l).at(aux - 1) == '.')
+      {
+          inGameBoard.at(l).at(aux - 1) = '#';
+      }
+      //adiciona palavra
+      for (size_t i = 0; i < word.size(); i++, c++)
+      {
+          inGameBoard.at(l).at(c) = word.at(i);
+      }
+      //adiciona # posterior
+      if(c < columns && inGameBoard.at(l).at(c) == '.')
+      {
+          inGameBoard.at(l).at(c) = '#';
+      }
+  }
+  else
+  {
+      //adiciona # anterior
+      int aux = l;
+      if(aux - 1 >= 0 && inGameBoard.at(aux - 1).at(c) == '.')
+      {
+          inGameBoard.at(aux - 1).at(c) = '#';
+      }
+      //adiciona palavra
+      for (size_t i = 0; i < word.size(); i++, l++)
+      {
+          inGameBoard.at(l).at(c) = word.at(i);
+      }
+      //adiciona # posterior
+      if(l < lines && inGameBoard.at(l).at(c) == '.')
+      {
+          inGameBoard.at(l).at(c) = '#';
+      }
+  }
+  return true;
+}
+
+void Board::removeWord(string word, string Reference)
+{
+    unsigned int  l, c;
+
+    l = convertLetter(Reference.at(0), true);
+    c = convertLetter(Reference.at(1), false);
+
+    if (Reference.at(2) == 'H')
+    {
+        //remove # anterior
+        int aux = c;
+        if(aux - 1 >= 0 && inGameBoard.at(l).at(aux - 1) == '#')
+        {
+            inGameBoard.at(l).at(aux - 1) = '.';
+        }
+        //remove palavra
+        for (size_t i = 0; i < word.size(); i++, c++)
+        {
+            inGameBoard.at(l).at(c) = '.';
+        }
+        //remove # posterior
+        if(c < columns && inGameBoard.at(l).at(c) == '#')
+        {
+            inGameBoard.at(l).at(c) = '.';
+        }
+    }
+    else
+    {
+        //adiciona # anterior
+        int aux = l;
+        if(aux - 1 >= 0 && inGameBoard.at(aux - 1).at(c) == '#')
+        {
+            inGameBoard.at(aux - 1).at(c) = '.';
+        }
+        //adiciona palavra
+        for (size_t i = 0; i < word.size(); i++, l++)
+        {
+            inGameBoard.at(l).at(c) = '.';
+        }
+        //adiciona # posterior
+        if(l < lines && inGameBoard.at(l).at(c) == '#')
+        {
+            inGameBoard.at(l).at(c) = '.';
+        }
+    }
+}
+void Board::writeInFile(ofstream& outfile)
+{
+      for (unsigned int i = 0; i < lines; i++)
+      {
+        for (size_t j = 0; j < columns; j++)
+        {
+          outfile << inGameBoard.at(i).at(j);
+        }
+        outfile << endl;
+      }
+      outfile << endl;
+}
+
+bool Board::fullBoard()
+{
+    unsigned int counter = 0;
+    for (size_t i = 0; i < lines; i++)
+    {
+        for (size_t j = 0; j < columns; j++)
+        {
+            if(inGameBoard.at(i).at(j) == '.')
+            {
+                counter++;
+            }
+        }
+    }
+    if (counter > 1)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+void Board::fillBoard()
+{
+    for (size_t i = 0; i < lines; i++)
+    {
+        for (size_t j = 0; j < columns; j++)
+        {
+            if(inGameBoard.at(i).at(j) == '.')
+            {
+                inGameBoard.at(i).at(j) = '#';
+            }
+        }
+    }
+}
+
+void Dictionary::CreateDictionary(ifstream& infile, string file4read)
+{
+  string    line, key, synonym;
+//  ifstream infile;
   regex    reg("[A-Za-z: ,]+");
   char    *tok = NULL, *write = NULL;
   bool     FirstWord;
-
-  getline(cin, file4read);
-
-  infile.open(file4read);
-
-
-  if (infile.fail())
-  {
-    cerr << "Error opening file: " << file4read << endl;
-    exit(1);
-  }
 
 
   while (!infile.eof())
@@ -81,8 +385,7 @@ void          Dictionary::CreateDictionary()
       }
     }
   }
-
-  infile.close();
+  setName(file4read);
 }
 
 void Dictionary::showDictionary()
@@ -190,218 +493,11 @@ vector<string>Dictionary::searchWord(string word)
   }
   return words;
 }
-
-Board::Board()
+void Dictionary::setName(string name)
 {
-    lines = 2;
-    columns = 2;
-    vector<vector<char> > words(lines, vector<char>(columns, '.'));
-    setInGameBoard(words);
+    DictionaryName = name;
 }
-
-
-Board::Board(int lin, int col)
+string Dictionary::getName()
 {
-  setLines(lin);
-  setColumns(col);
-  vector<vector<char> > words(lin, vector<char>(col, '.'));
-  setInGameBoard(words);
-}
-
-void Board::showBoard()
-{
-  //system("clear");
-  cout << "   ";
-
-  for (unsigned int i = 0; i < columns; i++)
-  {
-    cout << convertNumber(i, false) << " ";
-  }
-  cout << endl;
-
-  for (unsigned int i = 0; i < lines; i++)
-  {
-    cout << convertNumber(i, true) << " ";
-
-    for (size_t j = 0; j < columns; j++)
-    {
-      cout << " " << inGameBoard.at(i).at(j);
-    }
-    cout << endl;
-  }
-}
-
-void Board::setLines(int l)
-{
-  lines = l;
-}
-
-void Board::setColumns(int c)
-{
-  columns = c;
-}
-
-void Board::setInGameBoard(vector<vector<char> >b)
-{
-  inGameBoard = b;
-}
-
-char Board::convertNumber(int n,  bool upper)
-{
-  char c;
-
-  if (upper)
-  {
-    c = char(n + 65);
-    return c;
-  }
-  else
-  {
-    c = char(n + 97);
-    return c;
-  }
-  return '.';
-}
-
-int Board::convertLetter(char l, bool upper)
-{
-  if (upper)
-  {
-    l = int(l) - 65;
-    return l;
-  }
-  else
-  {
-    l = int(l) - 97;
-    return l;
-  }
-  return 0;
-}
-
-bool Board::addWord(string word, string Reference)
-{
-  int  l, c;
-  bool v;
-
-  l = convertLetter(Reference.at(0), true);
-  c = convertLetter(Reference.at(1), false);
-
-  if (Reference.at(2) == 'V')
-  {
-    v = 1;
-  }
-  else
-  {
-    v = 0;
-  }
-
-  if (v)
-  {
-    if (l + word.size() <= lines)
-    {
-      if (l - 1 >= 0)
-      {
-        inGameBoard.at(l - 1).at(c) = '#';
-      }
-
-      for (size_t i = l; i < word.size() + l; i++)
-      {
-        inGameBoard.at(i).at(c) = word.at(i - l);
-      }
-
-      if (l + word.size() != lines)
-      {
-        inGameBoard.at(l + word.size()).at(c) = '#';
-      }
-    }
-    else
-    {
-      cout << "Deu ruim" << endl;
-    }
-  }
-  else
-  {
-    if (c + word.size() <= columns)
-    {
-      if (c - 1 >= 0)
-      {
-        inGameBoard.at(l).at(c - 1) = '#';
-      }
-
-      for (size_t i = c; i < word.size() + c; i++)
-      {
-        inGameBoard.at(l).at(i) = word.at(i - c);
-      }
-
-      if (c + word.size() != columns)
-      {
-        inGameBoard.at(l).at(c + word.size()) = '#';
-      }
-    }
-    else
-    {
-      cout << "Deu ruim" << endl;
-    }
-  }
-
-
-  return true;
-}
-
-bool Board::removeWord(string word, string Reference)
-{
-  int  l, c;
-  bool v;
-
-  l = convertLetter(Reference.at(0), true);
-  c = convertLetter(Reference.at(1), false);
-
-  if (Reference.at(2) == 'V')
-  {
-    v = 1;
-  }
-  else
-  {
-    v = 0;
-  }
-
-  if (inGameBoard.at(l).at(c) != '.')
-  {
-    if (v)
-    {
-      if (inGameBoard.at(l).at(l - 2) == '.') {
-        inGameBoard.at(l - 1).at(c) = '.';
-      }
-      int i = l;
-
-      while (inGameBoard.at(i).at(c) != '#')
-      {
-        if ((inGameBoard.at(i).at(c - 1) == '.') && (inGameBoard.at(i).at(c + 1) == '.'))
-        {
-          inGameBoard.at(i).at(c) = '.';
-        }
-        i++;
-      }
-      inGameBoard.at(i).at(c) = '.';
-    }
-    else
-    {
-      if (inGameBoard.at(l).at(c - 2) == '.') {
-        inGameBoard.at(l).at(c - 1) = '.';
-      }
-      int i = c;
-
-      while (inGameBoard.at(l).at(i) != '#')
-      {
-        if ((inGameBoard.at(l - 1).at(i) == '.') && (inGameBoard.at(l + 1).at(i) == '.'))
-        {
-          inGameBoard.at(l).at(i) = '.';
-        }
-        i++;
-      }
-      inGameBoard.at(l).at(i) = '.';
-    }
-  }
-
-  return true;
+    return DictionaryName;
 }
