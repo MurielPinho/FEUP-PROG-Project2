@@ -398,16 +398,20 @@ void Dictionary::CreateDictionary(ifstream& infile, string file4read)
 void Dictionary::showDictionary(string Reference, int lines, int columns)
 {
   int size;
-  if (Reference.at(2) == 'H')
+  if (Reference.at(2) != 'H')
   {
-    size = columns - ((int)Reference.at(0) - 65);
+    size = lines -((int)Reference.at(0) - 65) ;
   }
   else
   {
-    size = lines - ((int)Reference.at(1) - 97);
+    size = columns - ((int)Reference.at(1) - 97);
 
   }
   cout << size << endl;
+  cout << lines << endl;
+  cout << columns << endl;
+
+
   for (size_t i = 0; i < inGameDictionary.size(); i++)
   {
     if (inGameDictionary.at(i).size()<= size)
