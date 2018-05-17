@@ -3,8 +3,10 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <regex>
+#include <sstream>
 #include "cwcreator.h"
 
 using namespace std;
@@ -166,9 +168,13 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
 bool Board2File(Dictionary crosswords, Board game)
 {
   char aux;
+  int gamesNumber;
+  ifstream infile;
   ofstream outfile;
-  string   file4write;
+  string   file4write, strGamesNumber;
+  ostringstream boardNumber;
 
+  infile.open("GamesNumber.txt");
   do
   {
     cout << "Save in File (y / n) ? ";
@@ -184,9 +190,20 @@ bool Board2File(Dictionary crosswords, Board game)
   }
   else
   {
-    cout << "Save file ? ";
-    getline(cin, file4write);
-
+    if (infile.fail())
+    {
+      cerr << "Error opening file" << endl;
+      exit(1);
+    }
+    getline(infile,strGamesNumber);
+    gamesNumber = stoi(strGamesNumber) ;
+    gamesNumber++;
+    outfile.open("GamesNumber.txt");
+    outfile << gamesNumber;
+    outfile.close();
+    boardNumber << "B";
+    boardNumber << setfill('0') << setw(3) << to_string(gamesNumber) <<".txt";
+    file4write = boardNumber.str();
     outfile.open(file4write);
 
     if (outfile.fail())
