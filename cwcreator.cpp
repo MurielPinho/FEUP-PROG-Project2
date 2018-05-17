@@ -168,13 +168,14 @@ bool puzzleCreator(Dictionary& crosswords, Board& game)
 bool Board2File(Dictionary crosswords, Board game)
 {
   char aux;
-  int gamesNumber;
+  int  gamesNumber;
   ifstream infile;
   ofstream outfile;
   string   file4write, strGamesNumber;
   ostringstream boardNumber;
 
   infile.open("GamesNumber.txt");
+
   do
   {
     cout << "Save in File (y / n) ? ";
@@ -195,14 +196,14 @@ bool Board2File(Dictionary crosswords, Board game)
       cerr << "Error opening file" << endl;
       exit(1);
     }
-    getline(infile,strGamesNumber);
-    gamesNumber = stoi(strGamesNumber) ;
+    getline(infile, strGamesNumber);
+    gamesNumber = stoi(strGamesNumber);
     gamesNumber++;
     outfile.open("GamesNumber.txt");
     outfile << gamesNumber;
     outfile.close();
     boardNumber << "B";
-    boardNumber << setfill('0') << setw(3) << to_string(gamesNumber) <<".txt";
+    boardNumber << setfill('0') << setw(3) << to_string(gamesNumber) << ".txt";
     file4write = boardNumber.str();
     outfile.open(file4write);
 
