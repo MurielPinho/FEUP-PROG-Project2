@@ -15,9 +15,10 @@ using namespace std;
 void beginProgram();
 int  options();
 bool puzzleCreator(Dictionary& crosswords, Board& game);
-void puzzleLoad(Dictionary& crosswords, Board& game);
+string puzzleLoad(Dictionary& crosswords, Board& game);
 void strUpper(string& s);
 bool Board2File(Dictionary crosswords, Board game);
+bool ReBoard2File(Dictionary crosswords, Board game, string name);
 bool wordControl(Dictionary crosswords, Board& game);
 char resumeOrFinish();
 bool verifyInput(string Reference);
@@ -57,7 +58,7 @@ int  main()
     }
     else if (opt == 2)
     {
-      puzzleLoad(crosswords, game);
+      word = puzzleLoad(crosswords, game);
 
       if (!wordControl(crosswords, game))
       {
@@ -68,7 +69,7 @@ int  main()
         cin.clear();
       }
 
-      if (Board2File(crosswords, game))
+      if (ReBoard2File(crosswords, game, word))
       {
         cout << "Board saved" << endl;
       }
@@ -222,7 +223,49 @@ bool Board2File(Dictionary crosswords, Board game)
   return true;
 }
 
-void puzzleLoad(Dictionary& crosswords, Board& game)
+bool ReBoard2File(Dictionary crosswords, Board game, string name)
+{
+  char aux;
+  int  gamesNumber;
+  ifstream infile;
+  ofstream outfile;
+  string   file4write, strGamesNumber;
+  ostringstream boardNumber;
+
+  do
+  {
+    cout << "Save in File (y / n) ? ";
+    cin >> aux;
+  } while (aux != 'y' && aux != 'n');
+
+  cin.clear();
+  cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+  if (aux == 'n')
+  {
+    return false;
+  }
+  else
+  {
+    file4write = name;
+    outfile.open(file4write);
+
+    if (outfile.fail())
+    {
+      cerr << "Error opening file" << endl;
+      exit(1);
+    }
+
+    outfile << crosswords.getName() << endl << endl;
+
+    game.writeInFile(outfile);
+
+    outfile.close();
+  }
+  return true;
+}
+
+string puzzleLoad(Dictionary& crosswords, Board& game)
 {
   int troca = 0, l;
   ifstream infile, dictionaryInfile;
@@ -281,6 +324,8 @@ void puzzleLoad(Dictionary& crosswords, Board& game)
   game.setColumns(aux.at(0).size());
   game.setInGameBoard(aux);
   infile.close();
+
+  return file4read;
 }
 
 bool wordControl(Dictionary crosswords, Board& game)
@@ -333,16 +378,6 @@ bool wordControl(Dictionary crosswords, Board& game)
         return false;
       }
 
-      if (cin.eof())
-      {
-        cin.clear();
-
-        if (resumeOrFinish() == 'f')
-        {
-          game.fillBoard();
-        }
-        return true;
-      }
     }
     else
     {
@@ -350,6 +385,18 @@ bool wordControl(Dictionary crosswords, Board& game)
     }
     game.showBoard();
   }
+
+  if (cin.eof())
+  {
+    cin.clear();
+
+    if (resumeOrFinish() == 'f')
+    {
+      game.fillBoard();
+    }
+    return true;
+  }
+
   return false;
 }
 

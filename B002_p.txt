@@ -1,0 +1,6 @@
+Name: andre | Number of Clues used: 0 | Time (in seconds): 22
+Name: daniel | Number of Clues used: 0 | Time (in seconds): 13
+Name: gustavo | Number of Clues used: 4 | Time (in seconds): 190
+Name: ed | Number of Clues used: 2 | Time (in seconds): 55
+Name: danie | Number of Clues used: 0 | Time (in seconds): 18
+Name: we | Number of Clues used: 0 | Time (in seconds): 14

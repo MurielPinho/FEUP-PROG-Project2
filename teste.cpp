@@ -279,6 +279,22 @@ bool Board::removeWord(string Reference)
   return false;
 }
 
+bool Board::removeWordPlayer(string Reference)
+{
+    map<string, string>::iterator position;
+    position = addedWordsPlayer.find(Reference);
+
+    if (position != addedWords.end())
+    {
+      addedWordsPlayer.erase(Reference);
+      rewriteBoardPlayer();
+      return true;
+    }
+
+    return false;
+
+}
+
 void Board::writeInFile(ofstream& outfile)
 {
   for (unsigned int i = 0; i < lines; i++)
@@ -301,6 +317,11 @@ void Board::writeInFile(ofstream& outfile)
 void Board::insertInMap(string key, string value)
 {
   addedWords.insert(pair<string, string>(key, value));
+}
+
+void Board::insertInMapPlayer(string key, string value)
+{
+    addedWordsPlayer.insert(pair<string, string>(key, value));
 }
 
 void Board::showMap()
@@ -369,6 +390,38 @@ void Board::rewriteBoard()
   setInGameBoard(words);
 
   for (const auto& i : addedWords) {
+    lcd  = i.first;
+    word = i.second;
+    addWord(word, lcd);
+  }
+}
+
+void Board::rewriteBoardPlayer()
+{
+  string lcd, word;
+
+  vector<string> words;
+  char aux[columns];
+
+  for (unsigned int i = 0; i < columns; i++)
+  {
+    aux[i] = '.';
+  }
+
+  for (unsigned int i = 0; i < lines; i++)
+  {
+    words.push_back(aux);
+  }
+  setInGameBoard(words);
+
+  for (const auto& i : addedWords) {
+    lcd  = i.first;
+    word = i.second;
+    addWord(word, lcd);
+  }
+  fillBoard();
+  convert2player();
+  for (const auto& i : addedWordsPlayer) {
     lcd  = i.first;
     word = i.second;
     addWord(word, lcd);
@@ -560,4 +613,185 @@ int Board::getLines()
 int Board::getColumns()
 {
   return columns;
+}
+vector<string> Board::getInGameBoard()
+{
+    return inGameBoard;
+}
+
+void Board::convert2player()
+{
+    for (size_t i = 0; i < lines; i++)
+    {
+      for (size_t j = 0; j < columns; j++)
+      {
+        if (inGameBoard.at(i).at(j) != '#')
+        {
+          inGameBoard.at(i).at(j) = '.';
+        }
+      }
+    }
+}
+
+map <string, string> Board::getMap()
+{
+    return addedWords;
+}
+
+map <string, string> Board::getMapPlayer()
+{
+    return addedWordsPlayer;
+}
+
+
+map <string, vector<string>> Dictionary::getSynonyms()
+{
+    return Synonyms;
+}
+
+Player::Player()
+{
+    playerName = "";
+    numberClues = 0;
+}
+
+Player::Player(string name)
+{
+    playerName = name;
+    numberClues = 0;
+}
+
+void Player::setName(string name)
+{
+    playerName = name;
+
+}
+
+string Player::getName()
+{
+    return playerName;
+}
+void Player::setTime(time_t begin, time_t end)
+{
+    playTime = end - begin;
+}
+
+time_t Player::getTime()
+{
+    return playTime;
+}
+
+void Player::updateClues()
+{
+    numberClues += 1;
+}
+
+unsigned int Player::getClues()
+{
+    return numberClues;
+}
+void Player::setBoardName(string name)
+{
+    boardName = name;
+}
+
+string Player::getBoardName()
+{
+    return boardName;
+}
+
+void Board::showBoardPlayer()
+{
+    cout << "   ";
+
+    for (unsigned int i = 0; i < columns; i++)
+    {
+      setcolor(RED);
+      cout << convertNumber(i, false) << " ";
+    }
+    cout << endl;
+
+    for (unsigned int i = 0; i < lines; i++)
+    {
+      setcolor(RED);
+      cout << convertNumber(i, true) << " ";
+
+      for (size_t j = 0; j < columns; j++)
+      {
+        if(inGameBoard.at(i).at(j) == '.')
+        {
+            cout << " ";
+            setcolor(WHITE, WHITE);
+            cout << inGameBoard.at(i).at(j);
+        }
+        else if(inGameBoard.at(i).at(j) == '#')
+        {
+            cout << " ";
+            setcolor(BLACK, BLACK);
+            cout << inGameBoard.at(i).at(j);
+        }
+        else
+        {
+            cout << " ";
+            setcolor(BLACK, WHITE);
+            cout << inGameBoard.at(i).at(j);
+        }
+
+      }
+      setcolor(7);
+      cout << endl;
+    }
+
+}
+
+void Player::setClues(unsigned int n)
+{
+    numberClues = n;
+}
+
+void Board::showAnswer()
+{
+    cout << "   ";
+
+    for (unsigned int i = 0; i < columns; i++)
+    {
+      setcolor(RED);
+      cout << convertNumber(i, false) << " ";
+    }
+    cout << endl;
+
+    for (unsigned int i = 0; i < lines; i++)
+    {
+      setcolor(RED);
+      cout << convertNumber(i, true) << " ";
+
+      for (size_t j = 0; j < columns; j++)
+      {
+        if(inGameBoard.at(i).at(j) == '#')
+        {
+            cout << " ";
+            setcolor(BLACK, BLACK);
+            cout << inGameBoard.at(i).at(j);
+        }
+        else
+        {
+            cout << " ";
+            setcolor(BLACK, WHITE);
+            cout << inGameBoard.at(i).at(j);
+        }
+
+      }
+      setcolor(7);
+      cout << endl;
+    }
+}
+
+void Board::clearMap()
+{
+    addedWords.clear();
+}
+
+void Board::clearMapPlayer()
+{
+    addedWordsPlayer.clear();
 }
