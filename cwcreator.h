@@ -9,15 +9,14 @@ using namespace std;
 void setcolor(unsigned int color);
 void setcolor(unsigned int color, unsigned int background_color);
 
-
 class Board {
 public:
 
-  Board();
-  Board(int lin, int col);
-  void showBoard();
-  void showBoardPlayer();
-  void showAnswer();
+  Board();  //construtor
+  Board(int lin, int col); //construtor
+  void showBoard(); //imprime board versao creator
+  void showBoardPlayer(); //imprime board versao player
+  void showAnswer(); //imprime board versao resposta
   bool addWord(string word, string Reference);
   bool removeWord(string Reference);
   void setLines(int l);
@@ -26,22 +25,22 @@ public:
   int  getColumns();
   void setInGameBoard(vector<string>b);
   vector<string> getInGameBoard();
-  int  convertLetter(char l, bool upper);
-  char convertNumber(int n, bool upper);
+  int  convertLetter(char l, bool upper); //conversao das coordenadas para numeros
+  char convertNumber(int n, bool upper);  //conversao das coordenadas para numeros
   void writeInFile(ofstream& outfile);
-  bool fullBoard();
-  void fillBoard();
+  bool fullBoard();     //verifica se tabuleiro esta cheio
+  void fillBoard();     //competa o tabuleiro com #
   void insertInMap(string key, string value);
   void insertInMapPlayer(string key, string value);
-  void showMap();
-  void rewriteBoard();
-  void convert2player();
+  void showMap();           //debug purposes
+  void rewriteBoard();      //Usado na remoção de palavra para reescrever possiveis palavras desfeitas
+  void convert2player();    //Converte tabuleiro para versão jogador
   map <string, string> getMap();
   map <string, string> getMapPlayer();
-  bool removeWordPlayer(string Reference);
-  void rewriteBoardPlayer();
-  void clearMap();
-  void clearMapPlayer();
+  bool removeWordPlayer(string Reference); //remove palavra versão player
+  void rewriteBoardPlayer();    //idem ao rewriteBoard mas para jogador
+  void clearMap();          //limpa o map
+  void clearMapPlayer();    //limpa o map player
 
 private:
 
@@ -54,12 +53,12 @@ private:
 class Dictionary {
 public:
 
-  void          CreateDictionary(ifstream& infile, string file4read);
+  void          CreateDictionary(ifstream& infile, string file4read); //construtor
   void          showDictionary(string Reference, int lines, int columns);
-  bool          VerifyWord(string word);
-  vector<string>searchWord(string word);
-  string        strFix(string s);
-  string        strLower(string s);
+  bool          VerifyWord(string word); //Verifica se a palavra existe
+  vector<string>searchWord(string word); //debug purposes
+  string        strFix(string s);        //conserta headers do dicionario
+  string        strLower(string s);      //conserta sinonimos
   void          setName(string name);
   string        getName();
   map <string, vector<string>> getSynonyms();
@@ -73,14 +72,14 @@ private:
 
 class Player {
 public:
-    Player();
-    Player(string name);
+    Player();   //construtor
+    Player(string name);    //construtor
     void setName(string name);
     string getName();
     void setTime(time_t begin, time_t end);
     time_t getTime();
     void setClues(unsigned int n);
-    void updateClues();
+    void updateClues(); //adiciona 1 ao contador de dicas
     unsigned int getClues();
     void setBoardName(string name);
     string getBoardName();

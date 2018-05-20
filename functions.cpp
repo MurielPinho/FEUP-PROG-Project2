@@ -73,7 +73,10 @@ void setcolor(unsigned int color, unsigned int background_color)
 }
 
 Board::Board()
-{}
+{
+    lines = 0;
+    columns = 0;
+}
 
 Board::Board(int lin, int col)
 {

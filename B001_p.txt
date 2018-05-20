@@ -1,0 +1,2 @@
+Name: daniel | Number of Clues used: 0 | Time (in seconds): 106
+Name: muriel | Number of Clues used: 3 | Time (in seconds): 116

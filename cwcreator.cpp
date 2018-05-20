@@ -11,16 +11,36 @@
 
 using namespace std;
 
-
+//Funcoes
+//==============================================================
+//Inicializa interface
 void beginProgram();
+//==============================================================
+//inicializa menu de opções
 int  options();
+//==============================================================
+//Cria um puzzle
 bool puzzleCreator(Dictionary& crosswords, Board& game);
+//==============================================================
+//Carrega puzzle de um arquivo
 string puzzleLoad(Dictionary& crosswords, Board& game);
+//==============================================================
+//Converte todas letras de uma string para maiuscula
 void strUpper(string& s);
+//==============================================================
+//Escreve em um novo arquivo de texto o board
 bool Board2File(Dictionary crosswords, Board game);
+//==============================================================
+//Escreve em um arquivo de texto já existente o board
 bool ReBoard2File(Dictionary crosswords, Board game, string name);
+//==============================================================
+//Controla as opções de entrada do usuário
 bool wordControl(Dictionary crosswords, Board& game);
+//==============================================================
+//Oferece a opção de salvar o board para depois ou termina-lo
 char resumeOrFinish();
+//==============================================================
+//Verifica a entrada do usuário
 bool verifyInput(string Reference);
 
 
@@ -226,7 +246,6 @@ bool Board2File(Dictionary crosswords, Board game)
 bool ReBoard2File(Dictionary crosswords, Board game, string name)
 {
   char aux;
-  int  gamesNumber;
   ifstream infile;
   ofstream outfile;
   string   file4write, strGamesNumber;
@@ -273,8 +292,7 @@ string puzzleLoad(Dictionary& crosswords, Board& game)
 
   vector<string> aux;
 
-
-  cout << "Load File ? ";
+  cout << "Load File (.txt) ? ";
   getline(cin, file4read);
 
   infile.open(file4read);

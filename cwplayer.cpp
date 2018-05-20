@@ -16,21 +16,49 @@
 
 using namespace std;
 
-bool beginGame(Dictionary crosswords, Board game, Board& player, Player& playerStats);
+//Funcoes
+//==============================================================
+//Inicializa interface
 void configurePlayer(Player& playerStats);
+//==============================================================
+//Inicializa jogo
+bool beginGame(Dictionary crosswords, Board game, Board& player, Player& playerStats);
+//==============================================================
+//Carrega puzzle de um arquivo
 void puzzleLoad(Dictionary& crosswords, Board& game, Player& playerStats);
+//==============================================================
+//Imprime dicas iniciais
 void initialClues(Dictionary crosswords, Board game);
+//==============================================================
+//Retorna nova dica
 string showOneClue(Dictionary crosswords, Board game, string reference);
+//==============================================================
+//Converte todas letras de uma string para maiuscula
 void strUpper(string& s);
+//==============================================================
+//Deixa apenas a primeira letra maiuscula
 string strLowerSpecial(string s);
+//==============================================================
+//Controla as opções de entrada do usuário
 bool wordControl(Dictionary crosswords, Board& game, Board original, Player& playerStats);
+//==============================================================
+//Verifica a entrada do usuário
 bool verifyInput(string Reference);
+//==============================================================
+//Verifica o tamanho da palavra
 int verifySize(string lcd, string word, Board original);
+//==============================================================
+//Verifica a posição dada pelo jogador
 bool verifyPosition(string lcd, Board original);
+//==============================================================
+//Escreve os dados do jogador no arquivo
 void player2file(Player& playerStats);
+//==============================================================
+//Compara maps para saber se houve sucesso por parte do jogador
 bool CompareMaps(const map<string, string>& l, const map<string, string>& r);
 
-
+//Variaveis globais
+//Usada para controlar o nome do arquivo
 string fileName;
 
 
@@ -151,6 +179,14 @@ void puzzleLoad(Dictionary& crosswords, Board& game, Player& playerStats)
         }
         else if (troca == 1)
         {
+            for (size_t i = 0; i < line.size(); i++)
+            {
+                if(line.at(i)=='.')
+                {
+                    cout << "This Board is not ready. Closing Program!" << endl;
+                    exit(1);
+                }
+            }
             aux.push_back(line);
         }
         else if (troca == 2)
@@ -173,7 +209,7 @@ bool wordControl(Dictionary crosswords, Board& game, Board original, Player& pla
     string lcd, word;
 
     game.showBoardPlayer();
-    while (cout << "Position ( LCD = / CRTL-Z = finish ) ? ", getline(cin, lcd))
+    while (cout << "Position ( LCD / CRTL-Z = finish ) ? ", getline(cin, lcd))
     {
       cout << "Word ( - = remove / ? = new clue ) ? ";
       getline(cin, word);
